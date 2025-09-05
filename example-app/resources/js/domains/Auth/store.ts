@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { ref, computed } from 'vue';
-import { getRequest } from '../services/http';
+import { getRequest } from '../../services/http';
 
 // state
 const users = ref([]);
@@ -28,6 +28,13 @@ export const updateUser = async (id, updatedUser) => {
     if (!data) return;
     users.value = data;
 };
+
+export const loginUser = async (credentials) => {
+    const { data } = await axios.post(`/api/login`, credentials);
+    if (!data) return;
+    users.value = data;
+};
+
 
 export const deleteUser = async (id) => {
     await axios.delete(`/api/users/${id}`);
