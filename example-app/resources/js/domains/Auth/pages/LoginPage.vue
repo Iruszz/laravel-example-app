@@ -52,7 +52,7 @@ import FormError from '../../../services/components/FormError.vue';
 import { useRouter } from 'vue-router';
 import axios, { AxiosError } from 'axios';
 import { setErrorBag, setMessage, destroyErrors, destroyMessage } from '../../../services/error';
-import { postRequest, csrfCookie } from '../../../services/http';
+import { getRequest, postRequest } from '../../../services/http';
 
 const router = useRouter();
 
@@ -67,25 +67,38 @@ const form = ref({
 
 const error = ref('');
 
-// const handleSubmit = () => emit('submit', form.value);
-
 const handleSubmit = async () => {
   destroyErrors();
   destroyMessage();
 
   try {
-    await csrfCookie();
+    await getRequest('/sanctum/csrf-cookie');
     const { data } = await postRequest('/login', form.value);
-
     console.log('Logged in user:', data.user);
-    router.push({ name: 'example.overview' });
-  } catch (err) {
-    if (axios.isAxiosError(err)) {
-      setErrorBag(err.response?.data.errors || {});
-      setMessage(err.response?.data.message || 'Login failed.');
-    } else {
-      setMessage('An unexpected error occurred.');
-    }
+    console.log(form.value)
+
+    // router.push({ name: 'example.overview' });
+  } catch(error) {
+    // doe iets met error
+      setErrorBag(error.response?.data.errors || {});
+      setMessage(error.response?.data.message || 'Login failed.');
   }
+
+
+
+  // try {
+  //   await csrfCookie();
+  //   const { data } = await postRequest('/login', form.value);
+
+  //   console.log('Logged in user:', data.user);
+  //   router.push({ name: 'example.overview' });
+  // } catch (err) {
+  //   if (axios.isAxiosError(err)) {
+  //     setErrorBag(err.response?.data.errors || {});
+  //     setMessage(err.response?.data.message || 'Login failed.');
+  //   } else {
+  //     setMessage('An unexpected error occurred.');
+  //   }
+  // }
 }
 </script>

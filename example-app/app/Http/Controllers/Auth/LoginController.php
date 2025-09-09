@@ -18,18 +18,19 @@ class LoginController extends Controller
             'password' => 'required',
         ]);
 
-        $user = User::where('email', $credentials['email'])->first();
+        if (Auth::attempt($credentials)) {
 
-        if (! $user || ! Hash::check($credentials['password'], $user->password)) {
-            return response()->json(['message' => 'Invalid credentials'], 401);
+            $request->session()->regenerate();
+
+            return redirect()->intended('login.overview');
+
         }
 
-        Auth::login($user); 
+        return back()->withErrors([
 
-        return response()->json([
-            'user' => $user,
-            'token' => $token,
-        ]);
+            'email' => 'The provided credentials do not match our records.',
+
+        ])->onlyInput('email');
     }
 
     public function logout(Request $request)
