@@ -15,11 +15,13 @@ export const fetchUsers = async () => {
     users.value = data;
 };
 
-export const createUser = async (newUser) => {
-    const {data} = await axios.post('/api/users', newUser);
+
+export const registerUser = async (newUser) => {
+    const {data} = await axios.post('/api/register', newUser);
     if(!data) return
     users.value = data;
 };
+
 
 export const getUserById = (id) => computed(() => users.value.find(user => user.id == id));
 

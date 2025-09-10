@@ -37,8 +37,9 @@
 
     <p class="mt-10 text-center text-sm/6 text-gray-400">
       Not a member?
-      <a href="#" class="font-semibold text-indigo-400 hover:text-indigo-300">Start a 14 day free trial</a>
+      <RouterLink to="/register" class="font-semibold text-indigo-400 hover:text-indigo-300">Start a 14 day free trial</RouterLink>
     </p>
+    
   </div>
 </div>
 
@@ -77,28 +78,11 @@ const handleSubmit = async () => {
     console.log('Logged in user:', data.user);
     console.log(form.value)
 
-    // router.push({ name: 'example.overview' });
+    router.push({ name: 'example.overview' });
   } catch(error) {
     // doe iets met error
       setErrorBag(error.response?.data.errors || {});
       setMessage(error.response?.data.message || 'Login failed.');
   }
-
-
-
-  // try {
-  //   await csrfCookie();
-  //   const { data } = await postRequest('/login', form.value);
-
-  //   console.log('Logged in user:', data.user);
-  //   router.push({ name: 'example.overview' });
-  // } catch (err) {
-  //   if (axios.isAxiosError(err)) {
-  //     setErrorBag(err.response?.data.errors || {});
-  //     setMessage(err.response?.data.message || 'Login failed.');
-  //   } else {
-  //     setMessage('An unexpected error occurred.');
-  //   }
-  // }
 }
 </script>

@@ -19,18 +19,16 @@ class LoginController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
-
+            
             $request->session()->regenerate();
-
-            return redirect()->intended('login.overview');
+            
+            return Auth::user();
 
         }
 
-        return back()->withErrors([
-
-            'email' => 'The provided credentials do not match our records.',
-
-        ])->onlyInput('email');
+        return response()->json([
+            'message' => 'Email en/of wachtwoord kloppen niet, doe iets beter..'
+        ], 422);
     }
 
     public function logout(Request $request)
