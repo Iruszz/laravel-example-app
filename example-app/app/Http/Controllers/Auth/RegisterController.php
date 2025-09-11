@@ -15,7 +15,9 @@ class RegisterController extends Controller
     public function store(StoreUserRequest $request) {
         $user = User::create($request->validated());
 
-        $users = User::all();
-        return UserResource::collection($users);
+        Auth::login($user);
+
+         $user->sendEmailVerificationNotification();
+        return new UserResource($user);
     }
 }

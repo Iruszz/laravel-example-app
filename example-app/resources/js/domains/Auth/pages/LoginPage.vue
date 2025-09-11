@@ -51,7 +51,6 @@ import { storeModuleFactory } from '../../../services/store/index';
 import ErrorMessage from '../../../services/components/ErrorMessage.vue';
 import FormError from '../../../services/components/FormError.vue';
 import { useRouter } from 'vue-router';
-import axios, { AxiosError } from 'axios';
 import { setErrorBag, setMessage, destroyErrors, destroyMessage } from '../../../services/error';
 import { getRequest, postRequest } from '../../../services/http';
 

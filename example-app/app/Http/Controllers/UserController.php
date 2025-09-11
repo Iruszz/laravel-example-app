@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\UserResource;
 use App\Models\User;
-use Illuminate\Http\Request;
 use App\Http\Requests\StoreUserRequest;
+use Illuminate\Auth\Events\Registered;
 
 class UserController extends Controller
 {
@@ -17,6 +17,8 @@ class UserController extends Controller
         $user = User::create($request->validated());
 
         $users = User::all();
+        event(new Registered($user));
+        
         return UserResource::collection($users);
     }
 }

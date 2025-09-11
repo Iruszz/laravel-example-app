@@ -48,13 +48,9 @@
 
 <script setup>
 import { ref } from 'vue';
-import { storeModuleFactory } from '../../../services/store/index';
 import ErrorMessage from '../../../services/components/ErrorMessage.vue';
 import FormError from '../../../services/components/FormError.vue';
 import { useRouter } from 'vue-router';
-import { setErrorBag, setMessage, destroyErrors, destroyMessage } from '../../../services/error';
-import { getRequest, postRequest } from '../../../services/http';
-// import { createUser } from '../store';
 import { registerUser } from './../store';
 
 const router = useRouter();
@@ -68,25 +64,8 @@ const form = ref({
 const error = ref('');
 
 const handleSubmit = async () => {
-    // destroyErrors();
-    // destroyMessage();
     await registerUser(form.value);
-    router.push('/example');
-
-
-
-
-//   try {
-//     await getRequest('/sanctum/csrf-cookie');
-//     const { data } = await postRequest('/login', form.value);
-//     console.log('Logged in user:', data.user);
-//     console.log(form.value)
-
-//     router.push({ name: 'example.overview' });
-//   } catch(error) {
-//     // doe iets met error
-//       setErrorBag(error.response?.data.errors || {});
-//       setMessage(error.response?.data.message || 'Login failed.');
-//   }
+    
+    router.push('/verify-email');
 }
 </script>
