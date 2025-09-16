@@ -5,15 +5,8 @@
         <div class="flex items-center">
           <div class="hidden md:block">
             <div class="ml-10 flex items-baseline space-x-4">
-                <router-link :to="{name: 'login.overview'}"
-                    class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white">
-                    Login
-                </router-link>
-                <!-- <router-link :to="{name: 'books.create'}"
-                    class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white">
-                    Create new Book
-                </router-link>
-                <router-link :to="{name: 'author.overview'}"
+  
+                <!-- <router-link :to="{name: 'author.overview'}"
                     class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white">
                     Author Overview
                 </router-link>
@@ -23,6 +16,16 @@
                 </router-link> -->
             </div>
           </div>
+        </div>
+        <div class="flex items-right">
+          <router-link v-if="!isLoggedIn" :to="{name: 'login.overview'}"
+              class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white">
+              Login
+          </router-link>
+          <router-link v-if="isAdmin" :to="{name: 'admin.overview'}"
+              class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+              Administrator
+          </router-link>
         </div>
         <div class="-mr-2 flex md:hidden">
           <!-- Mobile menu button -->
@@ -78,3 +81,22 @@
 <router-view></router-view>
 
 </template>
+
+<script setup>
+import { ref, onMounted } from 'vue';
+import { getRequest } from './services/http';
+
+const isLoggedIn = ref(false);
+const isAdmin = ref(false);
+
+onMounted(async () => {
+  try {
+    const res = await getRequest('/user');
+    isLoggedIn.value = !!res.data;
+    isAdmin.value = res.data?.is_admin === 1 || res.data?.is_admin === "1";
+  } catch (err) {
+    isLoggedIn.value = false;
+    isAdmin.value = false;
+  }
+});
+</script>

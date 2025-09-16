@@ -10,22 +10,22 @@
   <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
     <form @submit.prevent="handleSubmit" class="space-y-6">
       <div>
-        <label for="email" class="block text-sm/6 font-medium text-gray-100">Email address</label>
+        <label for="email" class="block text-sm/6 font-medium dark:text-gray-100">Email address</label>
         <div class="mt-2">
-          <input v-model="form.email" id="email" type="email" name="email" required autocomplete="email" class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6" />
+          <input v-model="form.email" id="email" type="email" name="email" required autocomplete="email" class="block w-full rounded-md dark:bg-white/5 px-3 py-1.5 text-base dark:text-white outline-1 -outline-offset-1 dark:outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6" />
         </div>
         <FormError name="email" />
       </div>
 
       <div>
         <div class="flex items-center justify-between">
-          <label for="password" class="block text-sm/6 font-medium text-gray-100">Password</label>
+          <label for="password" class="block text-sm/6 font-medium dark:text-gray-100">Password</label>
           <div class="text-sm">
             <a href="#" class="font-semibold text-indigo-400 hover:text-indigo-300">Forgot password?</a>
           </div>
         </div>
         <div class="mt-2">
-          <input v-model="form.password" id="password" type="password" name="password" required autocomplete="current-password" class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6" />
+          <input v-model="form.password" id="password" type="password" name="password" required autocomplete="current-password" class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base dark:text-white outline-1 -outline-offset-1 dark:outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6" />
         </div>
         <FormError name="password" />
       </div>

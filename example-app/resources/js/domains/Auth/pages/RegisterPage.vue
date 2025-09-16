@@ -66,6 +66,6 @@ const error = ref('');
 const handleSubmit = async () => {
     await registerUser(form.value);
     
-    router.push('/verify-email');
+    router.push({ path: '/verify-email', query: { email: form.value.email } });
 }
 </script>

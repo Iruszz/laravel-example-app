@@ -4,7 +4,7 @@
             <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700 p-10">
                 <h3 class="text-base-content mb-1.5 text-2xl font-semibold">Verify your email</h3>
                     <h3 class="mb-10 text-lg font-normal text-gray-500 dark:text-gray-300">
-                        An activation link has been sent to your email address: hello@example.com. Please check your inbox and click on the link to complete the activation process. 
+                        An activation link has been sent to your email address: {{ email }}. Please check your inbox and click on the link to complete the activation process. 
                     </h3>
                     <div class="text-center">
                     <p class="text-gray-500 dark:text-gray-300 text-base-content/80 text-center pt-3">
@@ -29,6 +29,16 @@ import { useRoute, useRouter } from 'vue-router'
 const route = useRoute()
 const router = useRouter()
 const message = ref('')
+const email = ref(route.query.email || '');
+
+async function fetchUser() {
+  try {
+    const res = await getRequest('/user')
+    email.value = res.data.email
+  } catch (err) {
+    email.value = ''
+  }
+}
 
 async function resend() {
   try {
@@ -42,7 +52,7 @@ async function resend() {
 
 onMounted(() => {
   if (route.query.verified) {
-    router.push('/example')
+    router.push('/example');
   }
-})
+});
 </script>
