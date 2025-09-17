@@ -1,19 +1,18 @@
 <template>
-<nav class="bg-gray-800/50">
+<nav class="bg-gray-800/50 mb-10">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="flex h-16 items-center justify-between">
         <div class="flex items-center">
           <div class="hidden md:block">
             <div class="ml-10 flex items-baseline space-x-4">
-  
-                <!-- <router-link :to="{name: 'author.overview'}"
+                <router-link :to="{name: 'ticket.overview'}"
                     class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white">
-                    Author Overview
+                    Ticket Overview
                 </router-link>
-                <router-link :to="{name: 'author.create'}"
+                <router-link :to="{name: 'ticket.create'}"
                     class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white">
-                    Add new Author
-                </router-link> -->
+                    Add new Ticket
+                </router-link>
             </div>
           </div>
         </div>
@@ -22,6 +21,10 @@
               class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white">
               Login
           </router-link>
+        <button v-if="isLoggedIn" @click="handleLogout"
+          class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white">
+          Logout
+        </button>
           <router-link v-if="isAdmin" :to="{name: 'admin.overview'}"
               class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
               Administrator
@@ -84,10 +87,12 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { getRequest } from './services/http';
+import { getRequest, postRequest } from './services/http';
+import { useRouter } from 'vue-router';
 
 const isLoggedIn = ref(false);
 const isAdmin = ref(false);
+const router = useRouter();
 
 onMounted(async () => {
   try {
@@ -99,4 +104,16 @@ onMounted(async () => {
     isAdmin.value = false;
   }
 });
+
+const handleLogout = async () => {
+  try {
+    await postRequest('/logout');
+    isLoggedIn.value = false;
+    isAdmin.value = false;
+    router.push({ name: 'login.overview' });
+  } catch (err) {
+    // Optionally show error message
+    console.error('Logout failed', err);
+  }
+}
 </script>

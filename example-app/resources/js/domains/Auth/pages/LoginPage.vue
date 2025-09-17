@@ -77,9 +77,8 @@ const handleSubmit = async () => {
     console.log('Logged in user:', data.user);
     console.log(form.value)
 
-    router.push({ name: 'example.overview' });
+    router.push({ name: 'tickets.overview' });
   } catch(error) {
-    // doe iets met error
       setErrorBag(error.response?.data.errors || {});
       setMessage(error.response?.data.message || 'Login failed.');
   }

@@ -7,9 +7,10 @@ return new class extends Migration {
     public function up() {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
-            $table->string('description');
+            $table->string('title');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
+            $table->foreignId('status_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

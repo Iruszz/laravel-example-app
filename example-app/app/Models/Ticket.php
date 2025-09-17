@@ -8,7 +8,7 @@ class Ticket extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['description', 'user_id', 'category_id'];
+    protected $fillable = ['title', 'user_id', 'category_id'];
 
     public function user()
     {
@@ -18,5 +18,10 @@ class Ticket extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function status()
+    {
+        return $this->belongsTo(Status::class);
     }
 }

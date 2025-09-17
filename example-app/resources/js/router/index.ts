@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { UsersRoutes } from '../domains/Auth/routes';
-import { ExampleRoutes } from '../domains/Example/routes';
+import { TicketRoutes } from '../domains/Tickets/routes';
 import { AdminRoutes } from '../domains/Admin/routes';
 
 export const router = createRouter({
     history: createWebHistory(),
-    routes: [{ path: '/', redirect: '/login' }, ...UsersRoutes, ...ExampleRoutes, ...AdminRoutes],
+    routes: [{ path: '/', redirect: '/login' }, ...UsersRoutes, ...TicketRoutes, ...AdminRoutes],
 });
 
 router.beforeEach(async (to, from, next) => {

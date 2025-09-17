@@ -4,6 +4,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\User;
 use App\Models\Category;
+use App\Models\Status;
 
 class TicketFactory extends Factory
 {
@@ -12,9 +13,10 @@ class TicketFactory extends Factory
     public function definition()
     {
         return [
-            'description' => $this->faker->sentence(),
+            'title' => $this->faker->sentence(),
             'user_id' => User::factory(),
             'category_id' => Category::factory(),
+            'status_id' => Status::inRandomOrder()->first()->id,
         ];
     }
 }
