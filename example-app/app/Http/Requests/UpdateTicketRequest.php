@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreTicketRequest extends FormRequest
+class UpdateTicketRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,6 +24,7 @@ class StoreTicketRequest extends FormRequest
         return [
             'title' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
+            'status_id' => 'required|exists:statuses,id',
         ];
     }
 }

@@ -1,9 +1,9 @@
 <script setup>
 import Form from '../components/Form.vue';
-import { storeModuleFactory } from '../../../services/store';
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
 import { ticketStore } from '..';
+import { createTicket } from '../store';
 
 const router = useRouter();
 
@@ -12,15 +12,19 @@ const description = "Here you can create the ticket"
 
 const ticket = ref({
     title: '',
-    // user_id: ,
     category_id: null,
-    status_id: 1
 });
 
 const handleSubmit = async (item) => {
-    await ticketStore.actions.create(item);
-    router.push({name: 'tickets.overview'});
+    try {
+        await createTicket(item);
+        console.log('Created ticket, navigating...');
+        router.push({ name: 'ticket.overview' });
+    } catch (err) {
+        console.error(err);
+    }
 };
+
 </script>
 
 <template>

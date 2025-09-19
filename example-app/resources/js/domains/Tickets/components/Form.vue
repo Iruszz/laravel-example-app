@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import { ticketStore } from '../index';
 import { categoryStore } from '../../Categories/index';
+import { userStore } from '../../Auth/index';
 import ErrorMessage from '../../../services/components/ErrorMessage.vue';
 import FormError from '../../../services/components/FormError.vue';
 import { useRouter } from 'vue-router';
@@ -12,6 +13,9 @@ ticketStore.actions.getAll();
 
 categoryStore.actions.getAll();
 const categories = categoryStore.getters.all;
+
+userStore.actions.getAll();
+const users = userStore.getters.all;
 
 const props = defineProps({ ticket: Object, title: String, description: String });
 

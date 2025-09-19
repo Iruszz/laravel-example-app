@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\StoreTicketRequest;
 
 class TicketController extends Controller
 {
@@ -11,16 +12,13 @@ class TicketController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->is_admin) {
-            $tickets = Ticket::with(['user', 'status', 'category'])
-                            ->orderBy('created_at', 'desc')
-                            ->get();
-        } else {
-            $tickets = Ticket::with(['status', 'category'])
-                            ->where('user_id', $user->id)
-                            ->orderBy('created_at', 'desc')
-                            ->get();
-        }
+        $tickets = Ticket::with(['user', 'status', 'category'])
+                        ->when(!$user->is_admin, function($query) use ($user) {
+                            $query->where('user_id', $user->id);
+                        })
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+
 
         return response()->json($tickets);
 
@@ -31,26 +29,23 @@ class TicketController extends Controller
         return Ticket::with(['user', 'category', 'status'])->orderBy('created_at', 'desc')->findOrFail($id);
     }
 
-    public function store(Request $request)
+    public function store(StoreTicketRequest $request)
     {
-        $ticket = Ticket::create($request->validate([
-            'title' => 'required|string',
-            'user_id' => 'required|exists:users,id',
-            'category_id' => 'required|exists:categories,id',
-            'status_id' => 'required|exists:categories,id',
-        ]));
+        $data = $request->validated();
+
+        $data['user_id'] = Auth::id();
+        $data['status_id'] = 1;
+
+        $ticket = Ticket::create($data);
+
         return response()->json($ticket, 201);
     }
 
     public function update(Request $request, $id)
     {
         $ticket = Ticket::findOrFail($id);
-        $ticket->update($request->validate([
-            'title' => 'required|string',
-            'user_id' => 'required|exists:users,id',
-            'category_id' => 'required|exists:categories,id',
-            'status_id' => 'required|exists:categories,id',
-        ]));
+        $ticket->update($request->validated());
+
         return response()->json($ticket);
     }
 
