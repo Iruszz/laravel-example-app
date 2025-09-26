@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
@@ -20,5 +21,9 @@ class UserController extends Controller
         event(new Registered($user));
         
         return UserResource::collection($users);
+    }
+
+    public function current(Request $request) {
+        return new UserResource($request->user());
     }
 }

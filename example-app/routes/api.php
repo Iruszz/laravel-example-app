@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\TicketController;
 use Illuminate\Http\Request;
@@ -10,9 +11,7 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Models\User;
 use Illuminate\Auth\Events\Verified;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+Route::get('/user', [UserController::class, 'current'])->middleware('auth:sanctum');
 
 Route::get('/email/verify', function () {
     return response()->json([

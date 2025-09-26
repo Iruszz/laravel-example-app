@@ -6,11 +6,7 @@
         <label class="block mb-1 font-medium">Title</label>
         <input v-model="form.title" type="text" class="w-full border rounded px-3 py-2" required />
       </div>
-      <div class="mb-4">
-        <label class="block mb-1 font-medium">Description</label>
-        <textarea v-model="form.description" class="w-full border rounded px-3 py-2" required></textarea>
-      </div>
-      <button type="submit" class="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-400">Save</button>
+      <button type="submit" class="bg-indigo-500 text-white mt-5 px-4 py-2 rounded hover:bg-indigo-400">Save</button>
     </form>
   </div>
 </template>

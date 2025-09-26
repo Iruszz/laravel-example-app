@@ -34,19 +34,19 @@ class TicketController extends Controller
         $data = $request->validated();
 
         $data['user_id'] = Auth::id();
-        $data['status_id'] = 1;
+        
 
         $ticket = Ticket::create($data);
 
         return response()->json($ticket, 201);
     }
 
-    public function update(Request $request, $id)
+    public function update(StoreTicketRequest $request, Ticket $ticket)
     {
-        $ticket = Ticket::findOrFail($id);
         $ticket->update($request->validated());
 
-        return response()->json($ticket);
+        $tickets = Ticket::all();
+        return response()->json($tickets);
     }
 
     public function destroy($id)
