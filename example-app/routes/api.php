@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\TicketController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -50,3 +51,4 @@ Route::post('/register', [RegisterController::class, 'store'])->name('register.p
 
 Route::apiResource('categories', CategoryController::class);
 Route::apiResource('tickets', TicketController::class);
+Route::apiResource('comments', CommentController::class);

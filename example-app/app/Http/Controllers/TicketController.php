@@ -5,6 +5,7 @@ use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreTicketRequest;
+use App\Models\User;
 
 class TicketController extends Controller
 {
@@ -21,12 +22,12 @@ class TicketController extends Controller
 
 
         return response()->json($tickets);
-
     }
 
     public function show($id)
-    {
-        return Ticket::with(['user', 'category', 'status'])->orderBy('created_at', 'desc')->findOrFail($id);
+    {   
+        $users = User::all();
+        return Ticket::with(['user', 'category', 'status'])->findOrFail($id);
     }
 
     public function store(StoreTicketRequest $request)
@@ -34,7 +35,7 @@ class TicketController extends Controller
         $data = $request->validated();
 
         $data['user_id'] = Auth::id();
-        
+        $data['status_id'] = 1;
 
         $ticket = Ticket::create($data);
 
