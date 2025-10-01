@@ -39,6 +39,11 @@ class TicketController extends Controller
 
         $ticket = Ticket::create($data);
 
+    
+        \App\Models\Comment::factory()->count(3)->create([
+            'ticket_id' => $ticket->id,
+        ]);
+
         return response()->json($ticket, 201);
     }
 

@@ -4,8 +4,8 @@ import { getRequest } from '../../services/http';
 
 interface Comment {
   id: number;
-  comment: string;
   user_id: number;
+  comment: string;
   ticket_id: number;
   created_at?: string;
   updated_at?: string;
@@ -17,20 +17,11 @@ const comments = ref<Comment[]>([]);
 // getters
 export const getAllComments = computed(() => comments.value);
 
-export const getCommentsByTicketId = (ticketId: number) =>
-  computed(() => comments.value.filter(comment => comment.ticket_id === ticketId));
-
 // actions
 export const fetchComments = async () => {
     const {data} = await getRequest('/comments');
     if(!data) return;
     comments.value = data.data;
-};
-
-export const fetchCommentsForTicket = async (ticketId: number) => {
-  const { data } = await getRequest(`/comments?ticket_id=${ticketId}`);
-  if (!data) return;
-  comments.value = data.data;
 };
 
 export const addComment = (comment) => {

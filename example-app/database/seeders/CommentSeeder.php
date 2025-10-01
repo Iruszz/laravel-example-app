@@ -14,21 +14,26 @@ class CommentSeeder extends Seeder
      */
     public function run(): void
     {
-        $tickets = Ticket::with('user')->get(); // assuming Ticket has a belongsTo User
-        $admin = \App\Models\User::where('is_admin', true)->inRandomOrder()->first();
+        $tickets = Ticket::with('user')->get();
+        $adminId = 2; // Specific admin user_id
 
-        Comment::factory()->count(50)
-            ->make()
-            ->each(function ($comment) use ($tickets, $admin) {
-                $ticket = $tickets->random();
+        foreach ($tickets as $ticket) {
+            // Alternate sender: user, admin, user, admin
+            $senders = [
+                ['user_id' => $ticket->user_id, 'recipient_id' => $adminId],
+                ['user_id' => $adminId, 'recipient_id' => $ticket->user_id],
+                ['user_id' => $ticket->user_id, 'recipient_id' => $adminId],
+                ['user_id' => $adminId, 'recipient_id' => $ticket->user_id],
+            ];
 
-                // 50/50 chance: comment from ticket owner or from admin
-                $comment->ticket_id = $ticket->id;
-                $comment->user_id = fake()->boolean
-                    ? $ticket->user_id
-                    : $admin->id;
-
+            foreach ($senders as $sender) {
+                $comment = \App\Models\Comment::factory()->make([
+                    'ticket_id' => $ticket->id,
+                    'user_id' => $sender['user_id'],
+                    'recipient_id' => $sender['recipient_id'],
+                ]);
                 $comment->save();
-            });
+            }
+        }
     }
 }

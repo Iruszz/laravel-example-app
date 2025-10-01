@@ -1,3 +1,22 @@
+<script setup>
+    import { ticketStore } from '..';
+
+    ticketStore.actions.getAll();
+    const tickets = ticketStore.getters.all;
+
+    ticketStore.setters.deleteByItem;
+
+    const deleteTicket = (id) => {
+        ticketStore.actions.delete(id);
+    }
+
+    function deleteComfirm(ticketId) {
+    if (confirm("The ticket is being deleted together with the reviews")) {
+        deleteTicket(ticketId)
+    }
+    }
+</script>
+
 <template>
     <div class="relative pb-15 overflow-x-auto shadow-md sm:rounded-lg">
         <div class="flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4 bg-white dark:bg-gray-900">
@@ -107,22 +126,3 @@
         </table>
     </div>
 </template>
-
-<script setup>
-import { ticketStore } from '..';
-
-ticketStore.actions.getAll();
-const tickets = ticketStore.getters.all;
-
-ticketStore.setters.deleteByItem;
-
-const deleteTicket = (id) => {
-    ticketStore.actions.delete(id);
-}
-
-function deleteComfirm(ticketId) {
-  if (confirm("The ticket is being deleted together with the reviews")) {
-    deleteTicket(ticketId)
-  }
-}
-</script>

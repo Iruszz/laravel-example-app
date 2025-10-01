@@ -1,21 +1,39 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { getRequest } from '../../../services/http';
-import { fetchCommentsForTicket, getCommentsByTicketId } from '../../Comments/store';
+import { commentStore } from '../../Comments/index';
+import Form from '../components/Form.vue';
 
 const route = useRoute();
-const ticket = ref(null);
-const ticketId = route.params.id;
+const router = useRouter();
 
-const ticketComments = getCommentsByTicketId(ticketId);
+const ticket = ref(null);
+const ticketId = Number(route.params.id);
+
+commentStore.actions.getAll();
+const comments = commentStore.getters.getCommentsByTicketId(ticketId);
+console.log('Comments for ticket', ticketId, comments.value);
+
+const comment = ref({
+    ticket_id: ticketId,
+    name: '',
+    comment: ''
+});
+
+const handleSubmit = async (item) => {
+    await commentStore.actions.create(item);
+    router.push({ name: 'tickets.show' });
+};
 
 onMounted(async () => {
-  const id = route.params.id;
-  const { data } = await getRequest(`/tickets/${id}`);
-  ticket.value = data;
-  await fetchCommentsForTicket(id);
+    const { data } = await getRequest(`/tickets/${ticketId}`);
+    ticket.value = data;
 });
+
+const deleteComment = (id) => {
+    commentStore.actions.delete(id);
+}
 </script>
 
 <template>
@@ -31,20 +49,20 @@ onMounted(async () => {
         <section v-if="ticket" class="py-8 bg-white md:py-16 dark:bg-gray-800 antialiased border-b border-white/10">
             <div class="max-w-screen-xl px-4 mx-auto 2xl:px-0">
                     <div class="mt-6 sm:mt-8 lg:mt-0">
-                        <!-- <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">
+                        <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">
                             {{ ticket.user.name }}
-                        </h1> -->
-                        <div class="mt-4 sm:items-center sm:gap-4 sm:flex">
+                        </h1>
+                        <!-- <div class="mt-4 sm:items-center sm:gap-4 sm:flex">
                             <p class="mb-6 text-gray-500 dark:text-gray-400">
-                            <!-- {{ users.id }} -->
+                            {{ users.id }}
                             </p>
-                        </div>
+                        </div> -->
 
                         <hr class="my-6 md:my-8 border-gray-200 dark:border-gray-800" />
 
-                        <!-- <p class="mb-6 text-gray-500 dark:text-gray-400">
-                            {{ ticket.title }}
-                        </p> -->
+                        <p class="mb-6 text-gray-500 dark:text-gray-400">
+                            {{`to` ticket.title }}
+                        </p>
                     </div>
             </div>
         </section>
@@ -54,13 +72,13 @@ onMounted(async () => {
         <section class="bg-white dark:bg-gray-900 py-8 lg:py-16 antialiased">
             <div class="max-w-2xl mx-auto px-4">
                 <div class="flex justify-between items-center mb-6">
-                    <!-- <h2 class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">Reviews ({{ comments.length }})</h2> -->
+                    <h2 class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">Reviews ({{ comments.length }})</h2>
                 </div>
-                <!-- <Form :comment="comment" @submit="handleSubmit" /> -->
+                <Form :comment="comment" @submit="handleSubmit" />
 
 
                 <article
-                    v-for="comment in ticketComments"
+                    v-for="comment in comments"
                     :key="comment.id"
                     class="p-6 text-base bg-white rounded-lg dark:bg-gray-900 mb-4">
                     <footer class="flex justify-between items-center mb-2">
