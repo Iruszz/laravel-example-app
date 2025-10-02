@@ -47,7 +47,6 @@
 
 <script setup>
 import { ref } from 'vue';
-import { storeModuleFactory } from '../../../services/store/index';
 import ErrorMessage from '../../../services/components/ErrorMessage.vue';
 import FormError from '../../../services/components/FormError.vue';
 import { useRouter } from 'vue-router';
@@ -55,10 +54,6 @@ import { setErrorBag, setMessage, destroyErrors, destroyMessage } from '../../..
 import { getRequest, postRequest } from '../../../services/http';
 
 const router = useRouter();
-
-const userStore = storeModuleFactory('users');
-userStore.actions.getAll();
-const users = userStore.getters.all;
 
 const form = ref({
   email: '',
@@ -74,8 +69,6 @@ const handleSubmit = async () => {
   try {
     await getRequest('/sanctum/csrf-cookie');
     const { data } = await postRequest('/login', form.value);
-    console.log('Logged in user:', data.user);
-    console.log(form.value)
 
     router.push({ name: 'ticket.overview' });
   } catch(error) {

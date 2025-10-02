@@ -12,13 +12,11 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Models\User;
 use Illuminate\Auth\Events\Verified;
 
-Route::get('/user', [UserController::class, 'current'])->middleware('auth:sanctum');
-
 Route::get('/email/verify', function () {
     return response()->json([
         'message' => 'Please verify your email address.'
     ]);
-})->middleware('auth:sanctum')->name('verification.notice');
+    })->middleware('auth:sanctum')->name('verification.notice');
 
 Route::get('/email/verify/{id}/{hash}', function ($id, $hash, Request $request) {
     $user = User::findOrFail($id);
@@ -49,6 +47,15 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout.perform
 
 Route::post('/register', [RegisterController::class, 'store'])->name('register.perform');
 
-Route::apiResource('categories', CategoryController::class);
-Route::apiResource('tickets', TicketController::class);
-Route::apiResource('comments', CommentController::class);
+
+
+    
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('categories', CategoryController::class);
+    Route::apiResource('tickets', TicketController::class);
+    Route::apiResource('comments', CommentController::class);
+});
+
+
+
+

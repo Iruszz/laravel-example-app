@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { ref, computed } from 'vue';
 import { getRequest } from '../../services/http';
+import { setMessage, destroyMessage } from '../../services/error';
 
 interface Ticket {
   id: number;
@@ -20,9 +21,20 @@ export const getAllTickets = computed(() => tickets.value);
 
 // actions
 export const fetchTickets = async () => {
-    const {data} = await getRequest('/tickets');
-    if(!data) return;
-    tickets.value = data;
+    destroyMessage(); // clear old errors
+
+    try {
+        const { data } = await getRequest('/tickets');
+        if (!data) return;
+        tickets.value = data;
+    } catch (error: any) {
+        if (error.response && error.response.status === 401) {
+            setMessage('401 Unauthorized - Je bent niet ingelogd.');
+        } else {
+            setMessage('Er is iets misgegaan bij het ophalen van de tickets.');
+        }
+        tickets.value = [];
+    }
 };
 
 export const addTicket = (ticket) => {

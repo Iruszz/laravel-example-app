@@ -52,7 +52,7 @@ async function resend() {
 
 onMounted(() => {
   if (route.query.verified) {
-    router.push('/tickets/overview');
+    router.push({ name: 'ticket.overview' });
   }
 });
 </script>

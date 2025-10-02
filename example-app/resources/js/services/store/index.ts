@@ -8,7 +8,6 @@ export const storeModuleFactory = (moduleName) => {
         all: computed(() => state.value),
         getById: (id: number) => computed(() => state.value[id]),
     };
-    console.log('all data', getters.all.value);
 
     const setters = {
         setAll: (items) => {
@@ -30,7 +29,6 @@ export const storeModuleFactory = (moduleName) => {
             const { data } = await getRequest(moduleName);
             if (!data) return;
             setters.setAll(data);
-            console.log('getAll data', data);
         },
 
         create: async (item) => {

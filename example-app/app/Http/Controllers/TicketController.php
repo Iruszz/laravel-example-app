@@ -13,15 +13,16 @@ class TicketController extends Controller
     {
         $user = Auth::user();
 
+        if (!$user) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
         $tickets = Ticket::with(['user', 'status', 'category'])
-                        ->when(!$user->is_admin, function($query) use ($user) {
+                        ->when($user && !$user->is_admin, function($query) use ($user) {
                             $query->where('user_id', $user->id);
                         })
                         ->orderBy('created_at', 'desc')
                         ->get();
-
-
-        return response()->json($tickets);
     }
 
     public function show($id)
