@@ -16,33 +16,42 @@ const comments = ref<Comment[]>([]);
 
 // getters
 export const getAllComments = computed(() => comments.value);
+export const getCommentsByTicketId = (ticketId: number) =>
+    computed(() => comments.value.filter(c => c.ticket_id === ticketId));
 
 // actions
 export const fetchComments = async () => {
-    const {data} = await getRequest('/comments');
-    if(!data) return;
-    comments.value = data.data;
+    const { data } = await getRequest('/comments');
+    if (!data) return;
+    comments.value = data; // adjust if backend is paginated: data.data
 };
 
-export const addComment = (comment) => {
+export const addComment = (comment: Comment) => {
     comments.value = [...comments.value, comment];
 };
 
 export const createComment = async (newComment: Omit<Comment, 'id'>) => {
-  const { data } = await axios.post('/api/comments', newComment);
-  if (!data) return;
-  addComment(data);
+    const { data } = await axios.post('/api/comments', newComment);
+    if (!data) return;
+    addComment(data);
 };
 
-export const getCommentById = (id) => computed(() => comments.value.find(comment => comment.id == id));
+export const getCommentById = (id: number) =>
+    computed(() => comments.value.find(comment => comment.id === id));
 
-export const updateComment = async (id, updatedComment) => {
+export const updateComment = async (id: number, updatedComment: Comment) => {
     const { data } = await axios.put(`/api/comments/${id}`, updatedComment);
     if (!data) return;
-    comments.value = data;
+
+    const index = comments.value.findIndex(c => c.id === data.id);
+    if (index !== -1) {
+        comments.value[index] = { ...data }; // update existing
+    } else {
+        comments.value.push({ ...data }); // append if new
+    }
 };
 
-export const deleteComment = async (id) => {
+export const deleteComment = async (id: number) => {
     await axios.delete(`/api/comments/${id}`);
     comments.value = comments.value.filter(comment => comment.id !== id);
 };

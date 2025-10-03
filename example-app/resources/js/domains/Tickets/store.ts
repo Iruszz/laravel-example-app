@@ -21,7 +21,7 @@ export const getAllTickets = computed(() => tickets.value);
 
 // actions
 export const fetchTickets = async () => {
-    destroyMessage(); // clear old errors
+    destroyMessage();
 
     try {
         const { data } = await getRequest('/tickets');
@@ -37,14 +37,14 @@ export const fetchTickets = async () => {
     }
 };
 
-export const addTicket = (ticket) => {
+export const addTicket = (ticket: Ticket) => {
     tickets.value = [...tickets.value, ticket];
 };
 
 export const createTicket = async (newTicket: Omit<Ticket, 'id'>) => {
-  const { data } = await axios.post('/api/tickets', newTicket);
-  if (!data) return;
-  addTicket(data);
+    const { data } = await axios.post('/api/tickets', newTicket);
+    if (!data) return;
+    addTicket(data);
 };
 
 export const getTicketById = (id) => computed(() => tickets.value.find(ticket => ticket.id == id));
@@ -52,7 +52,13 @@ export const getTicketById = (id) => computed(() => tickets.value.find(ticket =>
 export const updateTicket = async (id, updatedTicket) => {
     const { data } = await axios.put(`/api/tickets/${id}`, updatedTicket);
     if (!data) return;
-    tickets.value = data;
+
+    const index = tickets.value.findIndex(t => t.id === data.id);
+    if (index !== -1) {
+        tickets.value[index] = { ...data };
+    } else {
+        tickets.value.push({ ...data });
+    }
 };
 
 export const deleteTicket = async (id) => {

@@ -50,7 +50,7 @@ Route::post('/register', [RegisterController::class, 'store'])->name('register.p
 
 
     
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::apiResource('categories', CategoryController::class);
     Route::apiResource('tickets', TicketController::class);
     Route::apiResource('comments', CommentController::class);

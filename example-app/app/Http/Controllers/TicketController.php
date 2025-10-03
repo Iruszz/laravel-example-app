@@ -23,6 +23,8 @@ class TicketController extends Controller
                         })
                         ->orderBy('created_at', 'desc')
                         ->get();
+        
+        return response()->json($tickets);
     }
 
     public function show($id)

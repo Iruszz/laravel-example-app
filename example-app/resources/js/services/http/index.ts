@@ -32,6 +32,10 @@ http.interceptors.response.use(
                 setMessage('You must be logged in to access this page.');
                 router.push({ name: 'login.overview' });
             }
+            if (error.response.status === 403 && error.response.data.message?.includes('verified')) {
+                setMessage('Please verify your email before continuing.');
+                router.push({ name: 'emailVerification.overview' });
+            }
         }
         return Promise.reject(error);
     }

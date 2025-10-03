@@ -2,26 +2,20 @@ import { ref, computed } from 'vue';
 import { getRequest, postRequest, putRequest, deleteRequest } from '../../services/http';
 
 export const storeModuleFactory = (moduleName) => {
-    const state = ref({});
+    const state = ref([]);
 
     const getters = {
-        all: computed(() => state.value),
-        getById: (id: number) => computed(() => state.value[id]),
+        all: computed(() => state.value), 
+        getById: (id: number) => computed(() => state.value.find(item => item.id === id)),
     };
 
     const setters = {
         setAll: (items) => {
-            const newState = {};
-            for (const item of items) {
-                newState[item.id] = Object.freeze(item);
-            }
-            state.value = newState;
+            state.value = items.map(item => ({ ...item }));
         },
         deleteByItem: (item) => {
-            const newState = { ...state.value };
-            delete newState[item.id];
-            state.value = newState;
-        }
+            state.value = state.value.filter(i => i.id !== item.id);
+        },
     };
 
     const actions = {

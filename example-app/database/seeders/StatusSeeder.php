@@ -13,10 +13,16 @@ class StatusSeeder extends Seeder
      */
     public function run(): void
     {
-        $statuses = ['to do', 'in progress', 'completed'];
+        $statuses = [
+            ['name' => 'pending', 'color' => 'yellow-500'],
+            ['name' => 'solved',  'color' => 'green-500'],
+        ];
 
-        foreach ($statuses as $name) {
-            Status::firstOrCreate(['name' => $name]);
+        foreach ($statuses as $status) {
+            Status::firstOrCreate(
+                ['name' => $status['name']],
+                ['color' => $status['color']]
+            );
         }
     }
 }
