@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { destroyErrors, destroyMessage, setErrorBag, setMessage} from '../error';
 import { router } from '../../router';
+import { toastStore } from '../toast';
 
 const http = axios.create({
     baseURL: import.meta.env.VITE_API_URL || '/api',
@@ -29,12 +30,16 @@ http.interceptors.response.use(
                 setMessage(error.response.data.message);
             }
             if (error.response.status === 401) {
-                setMessage('You must be logged in to access this page.');
+                toastStore.add('You must be logged in to access this page.', 'error');
                 router.push({ name: 'login.overview' });
             }
             if (error.response.status === 403 && error.response.data.message?.includes('verified')) {
                 setMessage('Please verify your email before continuing.');
                 router.push({ name: 'emailVerification.overview' });
+            }
+            if (error.response.status === 403 && error.response.data.code?.includes('TICKET_FORBIDDEN')) {
+                toastStore.add('You are not authorized to view this ticket.', 'error');
+                router.push({ name: 'tickets.overview' });
             }
         }
         return Promise.reject(error);

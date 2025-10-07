@@ -27,10 +27,20 @@ class TicketController extends Controller
         return response()->json($tickets);
     }
 
-    public function show($id)
+    public function show(Request $request, Ticket $ticket)
     {   
-        $users = User::all();
-        return Ticket::with(['user', 'category', 'status'])->findOrFail($id);
+        $user = Auth::user();
+
+        if ($request->user()->cannot('view', $ticket)) {
+            return response()->json([
+                'message' => 'Forbidden',
+                'code' => 'TICKET_FORBIDDEN',
+            ], 403);
+        }
+
+        $ticket->load(['user', 'category', 'status']);
+
+        return response()->json($ticket);
     }
 
     public function store(StoreTicketRequest $request)

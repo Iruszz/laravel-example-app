@@ -1,3 +1,27 @@
+<script setup>
+import { ref } from 'vue';
+import ErrorMessage from '../../../services/components/ErrorMessage.vue';
+import FormError from '../../../services/components/FormError.vue';
+import { useRouter } from 'vue-router';
+import { registerUser } from './../store';
+
+const router = useRouter();
+
+const form = ref({
+    name: '',
+    email: '',
+    password: ''
+});
+
+const error = ref('');
+
+const handleSubmit = async () => {
+    await registerUser(form.value);
+    
+    router.push({ path: '/verify-email', query: { email: form.value.email } });
+}
+</script>
+
 <template>
 <ErrorMessage />
 
@@ -45,27 +69,3 @@
 </div>
 
 </template>
-
-<script setup>
-import { ref } from 'vue';
-import ErrorMessage from '../../../services/components/ErrorMessage.vue';
-import FormError from '../../../services/components/FormError.vue';
-import { useRouter } from 'vue-router';
-import { registerUser } from './../store';
-
-const router = useRouter();
-
-const form = ref({
-    name: '',
-    email: '',
-    password: ''
-});
-
-const error = ref('');
-
-const handleSubmit = async () => {
-    await registerUser(form.value);
-    
-    router.push({ path: '/verify-email', query: { email: form.value.email } });
-}
-</script>

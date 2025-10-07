@@ -5,7 +5,7 @@
         <div class="flex items-center">
           <div class="hidden md:block">
             <div class="ml-10 flex items-baseline space-x-4">
-                <router-link :to="{name: 'ticket.overview'}"
+                <router-link :to="{name: 'tickets.overview'}"
                     class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white">
                     Ticket Overview
                 </router-link>
@@ -47,7 +47,9 @@
     </div>
   </nav>
 
-<router-view></router-view>
+
+  <router-view />
+  <ToastContainer />
 
 </template>
 
@@ -55,6 +57,7 @@
 import { ref, onMounted } from 'vue';
 import { getRequest, postRequest } from './services/http';
 import { useRouter } from 'vue-router';
+import ToastContainer from './services/components/ToastContainer.vue';
 
 const isLoggedIn = ref(false);
 const isAdmin = ref(false);

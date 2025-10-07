@@ -121,7 +121,7 @@ function deleteConfirm(ticketId: number) {
                         <td class="px-6 py-4">
                             <RouterLink
                                 class="text-blue-600 dark:text-blue-500 hover:underline"
-                                :to="{ name: 'ticket.show', params: { id: ticket.id } }">
+                                :to="{ name: 'ticket.show', params: { ticket: ticket.id } }">
                                 {{ ticket.title }}
                             </RouterLink>
                         </td>

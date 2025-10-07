@@ -70,7 +70,7 @@ const handleSubmit = async () => {
     await getRequest('/sanctum/csrf-cookie');
     const { data } = await postRequest('/login', form.value);
 
-    router.push({ name: 'ticket.overview' });
+    router.push({ name: 'tickets.overview' });
   } catch(error) {
       setErrorBag(error.response?.data.errors || {});
       setMessage(error.response?.data.message || 'Login failed.');
