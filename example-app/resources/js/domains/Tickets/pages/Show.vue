@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { getRequest } from '../../../services/http';
 import { commentStore } from '../../Comments/index';
 import Form from '../../Comments/components/FormShowPage.vue';
+import Status from '../components/Status.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -22,11 +23,6 @@ const comment = ref({
     name: '',
     comment: ''
 });
-
-const statusColors = {
-    'yellow-500': { text: 'text-yellow-500', bg: 'bg-yellow-900' },
-    'green-500': { text: 'text-green-500', bg: 'bg-green-900' },
-};
 
 const formatTime = (dateStr) => {
   const d = new Date(dateStr);
@@ -66,45 +62,39 @@ const deleteComment = (id) => {
     <header v-if="ticket" class="relative bg-gray-800 after:pointer-events-none after:absolute after:inset-x-0 after:inset-y-0 after:border-y after:border-white/10">
         <div class="flex items-center space-x-5 mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
             <h1 class="text-3xl font-bold tracking-tight text-white">Ticket #{{ ticket.id }}</h1>
-            <span
-                class="inline-flex items-center rounded-md px-2.5 py-1 text-xs font-medium"
-                :class="[statusColors[ticket.status.color].text, statusColors[ticket.status.color].bg]"
-                >
-                <!-- Yellow (pending) -->
-                <svg v-if="ticket.status.color === 'yellow-500'" class="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                    <path fill-rule="evenodd" d="M5.5 3a1 1 0 0 0 0 2H7v2.3c0 .7.2 1.3.6 1.8L9 11.9l.1.1v.1L7.5 15a3 3 0 0 0-.6 1.8V19H5.5a1 1 0 1 0 0 2h13a1 1 0 1 0 0-2H17v-2.3a3 3 0 0 0-.6-1.8l-1.6-2.8v-.2l1.6-2.8a3 3 0 0 0 .6-1.8V5h1.5a1 1 0 1 0 0-2h-13Z" clip-rule="evenodd"/>
-                </svg>
-
-                <!-- Green (solved) -->
-                <svg v-if="ticket.status.color === 'green-500'" class="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                    <path fill-rule="evenodd" d="M9 2a1 1 0 0 0-1 1H6a2 2 0 0 0-2 2v15c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-2c0-.6-.4-1-1-1H9Zm1 2h4v2h1a1 1 0 1 1 0 2H9a1 1 0 0 1 0-2h1V4Zm5.7 8.7a1 1 0 0 0-1.4-1.4L11 14.6l-1.3-1.3a1 1 0 0 0-1.4 1.4l2 2c.4.4 1 .4 1.4 0l4-4Z" clip-rule="evenodd"/>
-                </svg>
-
-                {{ ticket.status.name }}
-            </span>
+            <Status :ticket="ticket"/>
         </div>
     </header>
 
     <main>
-        <section v-if="ticket" class="bg-white md:py-5 mx-10 dark:bg-gray-900 antialiased border-b border-white/10">
-            <div class="flex-inline items-center max-w-screen-xl mx-auto 2xl:px-0">
-                    <div class="sm:mt-8 lg:mt-0">
-                        <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">
-                            {{ ticket.title }}
-                        </h1>
-                        <p class="text-gray-500 dark:text-gray-400">
-                            Via email
-                        </p>
-                    </div>
-                    <div class="ml-auto">
-                        <p class="text-gray-500 dark:text-gray-400">
-                            {{ new Date(ticket.created_at).toLocaleDateString('en-US', { weekday: 'short' }) }},
-                        <time :datetime="ticket.created_at">
-                            {{ formatTime(ticket.created_at) }}
-                        </time>
-                            {{ timeAgo(ticket.created_at) }}
-                        </p>
-                    </div>
+        <section
+            v-if="ticket"
+            class="bg-white md:py-5 mx-10 dark:bg-gray-900 antialiased border-b border-white/10"
+        >
+        <div class="flex-inline items-start max-w-screen-xl mx-auto 2xl:px-0">
+            <div class="flex items-start justify-between max-w-screen-xl mx-auto 2xl:px-0">
+                <!-- Left column -->
+                <div>
+                    <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">
+                    {{ ticket.title }}
+                    </h1>
+                    <p class="text-gray-500 dark:text-gray-400">
+                    Via email
+                    </p>
+                </div>
+
+                <!-- Right column -->
+                <div class="text-right">
+                    <p class="text-gray-500 dark:text-gray-400">
+                    {{ new Date(ticket.created_at).toLocaleDateString('en-US', { weekday: 'short' }) }},
+                    <time :datetime="ticket.created_at">
+                        {{ formatTime(ticket.created_at) }}
+                    </time>
+                    {{ timeAgo(ticket.created_at) }}
+                    </p>
+                </div>
+            </div>
+
 
                     <!-- Comments -->
                     <div class="">

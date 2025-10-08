@@ -47,7 +47,34 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout.perform
 
 Route::post('/register', [RegisterController::class, 'store'])->name('register.perform');
 
+Route::get('/forgot-password', function () {
+})->middleware('guest')->name('password.request');
 
+Route::post('/reset-password', function (Request $request) {
+    $request->validate([
+        'token' => 'required',
+        'email' => 'required|email',
+        'password' => 'required|min:8|confirmed',
+
+    ]);
+
+    $status = Password::reset(
+        $request->only('email', 'password', 'password_confirmation', 'token'),
+        function (User $user, string $password) {
+            $user->forceFill([
+                'password' => Hash::make($password)
+            ])->setRememberToken(Str::random(60));
+
+            $user->save();
+
+            event(new PasswordReset($user));
+        }
+    );
+
+    return $status === Password::PasswordReset
+        ? redirect()->route('login')->with('status', __($status))
+        : back()->withErrors(['email' => [__($status)]]);
+})->middleware('guest')->name('password.update');
 
     
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {

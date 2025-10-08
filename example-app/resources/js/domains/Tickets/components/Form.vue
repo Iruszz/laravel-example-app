@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import { ticketStore } from '../index';
+// import { ticketStore } from '../index';
 import { categoryStore } from '../../Categories/index';
 import { userStore } from '../../Auth/index';
 import ErrorMessage from '../../../services/components/ErrorMessage.vue';
@@ -9,13 +9,8 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-ticketStore.actions.getAll();
-
 categoryStore.actions.getAll();
 const categories = categoryStore.getters.all;
-
-userStore.actions.getAll();
-const users = userStore.getters.all;
 
 const props = defineProps({ ticket: Object, title: String, description: String });
 
@@ -49,7 +44,7 @@ function cancel() {
                             />
                             </div>
                         </div>
-                        <FormError title="title" />
+                        <FormError name="title" />
 
                         <div class="sm:col-span-3">
                             <label for="category" class="block text-sm/6 font-medium text-white">Category</label>
@@ -66,7 +61,7 @@ function cancel() {
                                 </svg>
                             </div>
                         </div>
-                        <FormError title="category.title" />
+                        <FormError name="category.title" />
                     </div>
                 </div>
             </div>

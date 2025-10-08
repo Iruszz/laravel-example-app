@@ -21,7 +21,10 @@
         <div class="flex items-center justify-between">
           <label for="password" class="block text-sm/6 font-medium dark:text-gray-100">Password</label>
           <div class="text-sm">
-            <a href="#" class="font-semibold text-indigo-400 hover:text-indigo-300">Forgot password?</a>
+            <RouterLink class="font-semibold text-indigo-400 hover:text-indigo-300" 
+              :to="{ name: 'forgot-password.overview' }">
+                Forgot password?
+            </RouterLink>
           </div>
         </div>
         <div class="mt-2">

@@ -3,6 +3,7 @@ import { onMounted, computed } from 'vue';
 import { ticketStore } from '..';
 import ErrorMessage from '../../../services/components/ErrorMessage.vue';
 import { setMessage, destroyMessage } from '../../../services/error';
+import Status from '../components/Status.vue';
 
 destroyMessage();
 
@@ -104,7 +105,7 @@ function deleteConfirm(ticketId: number) {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="ticket in tickets" :key="ticket" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
+                    <tr v-for="ticket in tickets" :key="ticket.id" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
                         <td class="w-4 p-4">
                             <div class="flex items-center">
                                 <input id="checkbox-table-search-1" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
@@ -127,18 +128,44 @@ function deleteConfirm(ticketId: number) {
                         </td>
                         <td class="px-6 py-4">
                             <div class="flex items-center">
-                                <div class="h-2.5 w-2.5 rounded-full me-2" :class=" {
-                                    'bg-green-500': ticket.status.name === 'completed',
-                                    'bg-yellow-500': ticket.status.name === 'in progress',
-                                    'bg-gray-500': ticket.status.name === 'to do',
-                                    }">
-                                </div> 
-                                {{ ticket.status?.name || 'No status' }}
+                                <Status :ticket="ticket"/>
                             </div>
                         </td>
                         <td class="px-6 py-4">
+                            <button
+                                :id="`dropdownMenuButton-${ticket.id}`"
+                                :data-dropdown-toggle="`dropdownMenu-${ticket.id}`"
+                                class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                                type="button"
+                            > 
+                                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 3">
+                                    <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z"/>
+                                </svg>
+                            </button>
+
+                            <!-- Dropdown menu -->
+                            <div
+                                :id="`dropdownMenu-${ticket.id}`"
+                                class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700 dark:divide-gray-600"
+                            >
+                                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconHorizontalButton">
+                                <li>
+                                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Dashboard</a>
+                                </li>
+                                <li>
+                                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Settings</a>
+                                </li>
+                                <li>
+                                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Earnings</a>
+                                </li>
+                                </ul>
+                                <div class="py-2">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Separated link</a>
+                                </div>
+                            </div>
+
                             <RouterLink class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                            :to="{ name: 'ticket.edit', params: { id: ticket.id } }">
+                                :to="{ name: 'ticket.edit', params: { id: ticket.id } }">
                                 Edit Ticket
                             </RouterLink>
                         </td>
@@ -155,4 +182,5 @@ function deleteConfirm(ticketId: number) {
             </div>
         </div>
     </div>
+
 </template>

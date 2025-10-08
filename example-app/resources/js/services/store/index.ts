@@ -11,7 +11,13 @@ export const storeModuleFactory = (moduleName) => {
 
     const setters = {
         setAll: (items) => {
-            state.value = items.map(item => ({ ...item }));
+            if (Array.isArray(items)) {
+                state.value = items.map(item => ({ ...item }));
+            } else if (items && typeof items === 'object') {
+                state.value = [{ ...items }];
+            } else {
+                state.value = [];
+            }
         },
         deleteByItem: (item) => {
             state.value = state.value.filter(i => i.id !== item.id);

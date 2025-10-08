@@ -64,7 +64,7 @@ class TicketController extends Controller
     {
         $ticket->update($request->validated());
 
-        $tickets = Ticket::all();
+        $tickets = Ticket::with(['user', 'status', 'category'])->get();
         return response()->json($tickets);
     }
 
