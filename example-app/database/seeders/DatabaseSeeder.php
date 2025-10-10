@@ -19,10 +19,13 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
+            NormalUsersSeeder::class,
+            ExtraUsersSeeder::class,
             AdminSeeder::class, 
             StatusSeeder::class,
             CategorySeeder::class,
             TicketSeeder::class,
+            TicketAgentSeeder::class,
             CommentSeeder::class,
         ]);
     }

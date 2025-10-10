@@ -17,7 +17,7 @@ class TicketController extends Controller
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
-        $tickets = Ticket::with(['user', 'status', 'category'])
+        $tickets = Ticket::with(['user', 'status', 'category', 'agent'])
                         ->when($user && !$user->is_admin, function($query) use ($user) {
                             $query->where('user_id', $user->id);
                         })
