@@ -1,24 +1,31 @@
 <script setup>
-import { ref } from 'vue';
-// import { ticketStore } from '../index';
-import { categoryStore } from '../../Categories/index';
-import { userStore } from '../../Auth/index';
+import { ref, onMounted } from 'vue';
+import { ticketStore } from '../../Tickets/index';
+import { getRequest } from '../../../services/http'
 import ErrorMessage from '../../../services/components/ErrorMessage.vue';
 import FormError from '../../../services/components/FormError.vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 const router = useRouter();
+const route = useRoute();
 
-categoryStore.actions.getAll();
-const categories = categoryStore.getters.all;
+const ticketId = Number(route.params.id);
+ticketStore.actions.getAll()
+const tickets = ticketStore.getters.all;
+const ticket = ticketStore.getters.getById(ticketId);
 
-const props = defineProps({ ticket: Object, title: String, description: String });
+const title = "Assign agent"
+const description = "Here you can assign the agent"
 
 const emit = defineEmits(['submit']);
 
-const formData = ref({ ...props.ticket });
+const formData = ref({ ...ticket });
 
-const handleSubmit = () => emit('submit', formData.value);
+const handleSubmit = async (item) => {
+    await ticketStore.actions.update(route.params.id, item);
+    emit('submit', formData.value)
+    router.push({ name: 'tickets.overview' });
+};
 
 function cancel() {
   router.push({ name: 'tickets.overview' })
@@ -37,28 +44,18 @@ function cancel() {
 
                     <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                         <div class="sm:col-span-4">
-                            <label for="title" class="block text-sm/6 font-medium text-white">Title</label>
-                            <div class="mt-2">
-                                <input v-model="formData.title" id="title" type="text" name="title" autocomplete="given-name" required
-                                class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6" 
-                            />
-                            </div>
-                        </div>
-                        <FormError name="title" />
-
-                        <div class="sm:col-span-3">
-                            <label for="category" class="block text-sm/6 font-medium text-white">Category</label>
+                            <label for="ticket" class="block text-sm/6 font-medium text-white">Agent</label>
                             <div class="mt-2 grid grid-cols-1">
-                                <select v-model="formData.category_id" id="category" title="category" required
+                                <select v-model="ticket_id" id="ticket" title="ticket" required
                                     class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white/5 py-1.5 pr-8 pl-3 text-base text-white outline-1 -outline-offset-1 outline-white/10 *:bg-gray-800 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
                                 >
-                                    <option v-for="category in categories" :key="category.id" :value="category.id">
-                                        {{ category.title }}
+                                    <option v-for="ticket in tickets" :key="tickets.id" :value="tickets.id">
+                                        {{ ticket.agent ? ticket.agent.name : 'No Agent' }}
                                     </option>
                                 </select>
                             </div>
                         </div>
-                        <FormError name="category.title" />
+                        <FormError name="ticket.title" />
                     </div>
                 </div>
             </div>

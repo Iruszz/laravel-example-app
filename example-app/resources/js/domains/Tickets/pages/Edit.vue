@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { getRequest, putRequest } from '../../../services/http';
+import { getRequest } from '../../../services/http';
 import { ticketStore } from '..';
 import Form from '../components/Form.vue';
 

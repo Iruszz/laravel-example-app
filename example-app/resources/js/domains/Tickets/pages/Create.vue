@@ -13,6 +13,7 @@ const description = "Here you can create the ticket"
 const ticket = ref({
     title: '',
     category_id: null,
+    agent_id: null,
 });
 
 const handleSubmit = async (item) => {

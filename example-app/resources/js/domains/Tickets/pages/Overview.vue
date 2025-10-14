@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, computed, nextTick } from 'vue';
+import { onMounted, computed, nextTick, ref, reactive } from 'vue';
 import { ticketStore } from '..';
 import ErrorMessage from '../../../services/components/ErrorMessage.vue';
 import { setMessage, destroyMessage } from '../../../services/error';
@@ -144,7 +144,7 @@ function deleteConfirm(ticketId: number) {
                                 <div class="flex items-center">
                                     <img class="w-10 h-10 rounded-full object-cover" src="https://flowbite.com/docs/images/examples/image-2@2x.jpg" alt="Jese image">
                                     <div class="ps-3">
-                                        <div class="text-gray-800 dark:text-white">
+                                        <div :class="ticket.agent ? 'dark-text-gray-800 dark:text-white' : 'text-gray-500 dark:text-red'">
                                             {{ ticket.agent ? ticket.agent.name : 'No Agent' }}
                                         </div>
                                     </div>  
@@ -185,12 +185,13 @@ function deleteConfirm(ticketId: number) {
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="#" class="flex block px-4 py-2 mx-2 gap-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                            <RouterLink class="flex block px-4 py-2 mx-2 gap-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                                :to="{ name: 'ticket.assign', params: { id: ticket.id } }">
                                                 <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
                                                     <path fill-rule="evenodd" d="M8 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4H6Zm7.3-2a6 6 0 0 0 0-6A4 4 0 0 1 20 8a4 4 0 0 1-6.7 3Zm2.2 9a4 4 0 0 0 .5-2v-1a6 6 0 0 0-1.5-4H18a4 4 0 0 1 4 4v1a2 2 0 0 1-2 2h-4.5Z" clip-rule="evenodd"></path>
                                                 </svg>
                                                 Assignee
-                                            </a>
+                                            </RouterLink>
                                         </li>
                                         <li>
                                             <RouterLink class="flex block px-4 py-2 mx-2 gap-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
@@ -205,7 +206,7 @@ function deleteConfirm(ticketId: number) {
                                     </ul>
                                     <ul class="py-2 px-2 text-sm font-medium text-gray-700 dark:text-gray-400">
                                         <li>
-                                            <button type="button" id="deleteInvoiceButton" data-modal-target="deleteTicketModal" data-modal-toggle="deleteTicketModal" 
+                                            <button type="button" id="deleteInvoiceButton" data-modal-target="deleteTicketModal" 
                                                 class="flex w-full px-4 py-2 gap-2 rounded-lg text-sm text-red-700 hover:bg-red-100 dark:hover:bg-gray-600 dark:text-red-500"
                                                 @click="deleteConfirm(ticket.id)">
                                                 <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
