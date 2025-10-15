@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AgentController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\UserController;
@@ -81,6 +82,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::apiResource('categories', CategoryController::class);
     Route::apiResource('tickets', TicketController::class);
     Route::apiResource('comments', CommentController::class);
+
+    // Alleen voor admin auth admin?
+    Route::apiResource('users', UserController::class);
+    Route::apiResource('agents', AgentController::class);
 });
 
 

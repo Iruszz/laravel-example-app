@@ -39,6 +39,10 @@ class TicketPolicy
 
     public function Update(User $user, Ticket $ticket)
     {
+        if ($user->is_admin) {
+
+        }
+
         return $user->id === $ticket->user_id
             ? Response::allow()
             : Response::denyWithStatus(404);

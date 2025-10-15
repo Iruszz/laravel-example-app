@@ -1,29 +1,38 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { ticketStore } from '../../Tickets/index';
-import { getRequest } from '../../../services/http'
+import { userStore } from '../../Auth/index';
 import ErrorMessage from '../../../services/components/ErrorMessage.vue';
 import FormError from '../../../services/components/FormError.vue';
 import { useRoute, useRouter } from 'vue-router';
+import { getAllAgents } from './../../Agents/store';
 
 const router = useRouter();
 const route = useRoute();
 
 const ticketId = Number(route.params.id);
-ticketStore.actions.getAll()
 const tickets = ticketStore.getters.all;
 const ticket = ticketStore.getters.getById(ticketId);
+
+userStore.actions.getAll();
+const users = userStore.getters.all;
+
+const formData = ref({});
+
+ (async () => {
+   await ticketStore.actions.getAll();
+   formData.value = { ...ticket.value };
+ })();
 
 const title = "Assign agent"
 const description = "Here you can assign the agent"
 
 const emit = defineEmits(['submit']);
 
-const formData = ref({ ...ticket });
 
-const handleSubmit = async (item) => {
-    await ticketStore.actions.update(route.params.id, item);
-    emit('submit', formData.value)
+
+const handleSubmit = async () => {
+    await ticketStore.actions.update(ticketId, formData.value);
     router.push({ name: 'tickets.overview' });
 };
 
@@ -44,13 +53,13 @@ function cancel() {
 
                     <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                         <div class="sm:col-span-4">
-                            <label for="ticket" class="block text-sm/6 font-medium text-white">Agent</label>
+                            <label for="user" class="block text-sm/6 font-medium text-white">Agent</label>
                             <div class="mt-2 grid grid-cols-1">
-                                <select v-model="ticket_id" id="ticket" title="ticket" required
+                                <select v-model="formData.agent_id" id="user" title="user" required
                                     class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white/5 py-1.5 pr-8 pl-3 text-base text-white outline-1 -outline-offset-1 outline-white/10 *:bg-gray-800 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
                                 >
-                                    <option v-for="ticket in tickets" :key="tickets.id" :value="tickets.id">
-                                        {{ ticket.agent ? ticket.agent.name : 'No Agent' }}
+                                    <option v-for="(agent, index) in getAllAgents" :key="index" :value="agent.id">
+                                        {{ agent.name }}
                                     </option>
                                 </select>
                             </div>

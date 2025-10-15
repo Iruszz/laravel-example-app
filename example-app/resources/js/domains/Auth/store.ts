@@ -15,15 +15,15 @@ export const fetchUsers = async () => {
     users.value = data;
 };
 
-
 export const registerUser = async (newUser) => {
     const {data} = await axios.post('/api/register', newUser);
     if(!data) return
     users.value = data;
 };
 
-
 export const getUserById = (id) => computed(() => users.value.find(user => user.id == id));
+
+export const getAdminById = () => computed(() => users.value.find(user => user.is_admin == true));
 
 export const updateUser = async (id, updatedUser) => {
     const { data } = await axios.put(`/api/users/${id}`, updatedUser);

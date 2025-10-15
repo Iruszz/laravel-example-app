@@ -8,7 +8,7 @@ class Ticket extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'user_id', 'category_id', 'status_id'];
+    protected $fillable = ['title', 'user_id', 'category_id', 'status_id', 'agent_id'];
 
     public function user()
     {
@@ -30,7 +30,7 @@ class Ticket extends Model
         return $this->hasMany(Comment::class);
     }
 
-        public function agent()
+    public function agent()
     {
         return $this->belongsTo(User::class, 'agent_id');
     }

@@ -21,6 +21,7 @@ class TicketResource extends JsonResource
             'category_id' => $this->category_id,
             'status_id' => $this->status_id,
             'review_id' => $this->review_id,
+            'agent_id' => $this->agent_id,
         ];
     }
 }

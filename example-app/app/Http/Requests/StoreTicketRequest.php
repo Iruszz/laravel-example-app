@@ -22,8 +22,9 @@ class StoreTicketRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string|max:255',
-            'category_id' => 'required|exists:categories,id',
+            'title' => 'required|string|max:255|required_without:agent_id',
+            'category_id' => 'required|exists:categories,id|required_without:agent_id',
+            'agent_id' => 'nullable|exists:users,id|required_without:title,category_id',
         ];
     }
 }

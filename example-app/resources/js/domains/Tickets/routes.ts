@@ -10,5 +10,4 @@ export const TicketRoutes =  [
     { path: '/tickets/create', component: Create, name: 'ticket.create' },
     { path: '/tickets/:id/edit', component: Edit, name: 'ticket.edit' },
     { path: '/tickets/:id/assign', component: Assign, name: 'ticket.assign' },
-
 ];

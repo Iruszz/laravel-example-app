@@ -9,6 +9,7 @@ use App\Models\User;
 
 class TicketController extends Controller
 {
+
     public function index()
     {
         $user = Auth::user();

@@ -19,7 +19,6 @@ const ticket = ref({
 const handleSubmit = async (item) => {
     try {
         await createTicket(item);
-        console.log('Created ticket, navigating...');
         router.push({ name: 'tickets.overview' });
     } catch (err) {
         console.error(err);
