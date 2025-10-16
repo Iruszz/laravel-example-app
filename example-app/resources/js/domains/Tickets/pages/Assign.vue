@@ -1,7 +1,9 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { ticketStore } from '../../Tickets/index';
+import { assignAgentToTicket } from '../../Tickets/store';
 import { userStore } from '../../Auth/index';
+import { agentStore } from '../../Agents';
 import ErrorMessage from '../../../services/components/ErrorMessage.vue';
 import FormError from '../../../services/components/FormError.vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -15,24 +17,22 @@ const tickets = ticketStore.getters.all;
 const ticket = ticketStore.getters.getById(ticketId);
 
 userStore.actions.getAll();
-const users = userStore.getters.all;
 
-const formData = ref({});
-
- (async () => {
-   await ticketStore.actions.getAll();
-   formData.value = { ...ticket.value };
- })();
+const formData = ref({ agent_id: null });
 
 const title = "Assign agent"
 const description = "Here you can assign the agent"
 
+onMounted(() => {
+  if (ticket.value) {
+    formData.value.agent_id = ticket.value.agent_id ?? null;
+  }
+});
+
 const emit = defineEmits(['submit']);
 
-
-
 const handleSubmit = async () => {
-    await ticketStore.actions.update(ticketId, formData.value);
+    await assignAgentToTicket(ticketId, formData.value.agent_id);
     router.push({ name: 'tickets.overview' });
 };
 
@@ -58,7 +58,7 @@ function cancel() {
                                 <select v-model="formData.agent_id" id="user" title="user" required
                                     class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white/5 py-1.5 pr-8 pl-3 text-base text-white outline-1 -outline-offset-1 outline-white/10 *:bg-gray-800 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
                                 >
-                                    <option v-for="(agent, index) in getAllAgents" :key="index" :value="agent.id">
+                                    <option v-for="agent in getAllAgents" :key="agent.id" :value="agent.id">
                                         {{ agent.name }}
                                     </option>
                                 </select>

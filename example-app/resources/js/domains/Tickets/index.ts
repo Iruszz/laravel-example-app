@@ -1,4 +1,5 @@
 import {storeModuleFactory} from '../../services/store';
+import axios from 'axios';
 
 export const PROJECT_DOMAIN_NAME = 'tickets';
 
@@ -10,6 +11,6 @@ export const ticketStore = {
     },
     setters: baseProjectStore.setters,
     actions: {
-        ...baseProjectStore.actions
+        ...baseProjectStore.actions,
     },
 };

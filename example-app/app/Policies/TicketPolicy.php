@@ -23,6 +23,14 @@ class TicketPolicy
         return null;
     }
 
+    public function assignAgent(User $user, Ticket $ticket)
+    {
+        return $user->is_admin
+            ? Response::allow()
+            : Response::denyWithStatus(403, 'Only admins can assign agents.');
+    }
+
+
     public function View(User $user, Ticket $ticket)
     {
         return $user->id === $ticket->user_id

@@ -1,4 +1,5 @@
-import {storeModuleFactory} from '../../services/store';
+import { storeModuleFactory } from '../../services/store';
+import { computed } from 'vue';
 
 export const ADMIN_DOMAIN_NAME = 'agents';
 

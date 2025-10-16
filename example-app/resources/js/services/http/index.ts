@@ -37,9 +37,14 @@ http.interceptors.response.use(
                 setMessage('Please verify your email before continuing.');
                 router.push({ name: 'emailVerification.overview' });
             }
-            if (error.response.status === 403 && error.response.data.code?.includes('TICKET_FORBIDDEN')) {
+            if (error.response.status === 403) {
+            const code = error.response.data.code;
+            if (code === 'TICKET_FORBIDDEN') {
                 toastStore.add('You are not authorized to view this ticket.', 'error');
-                router.push({ name: 'tickets.overview' });
+            } else if (code === 'AGENT_ASSIGNMENT_FORBIDDEN') {
+                toastStore.add('Only admins can assign agents.', 'error');
+            }
+            router.push({ name: 'tickets.overview' });
             }
         }
         return Promise.reject(error);

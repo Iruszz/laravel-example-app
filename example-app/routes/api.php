@@ -76,9 +76,10 @@ Route::post('/reset-password', function (Request $request) {
         ? redirect()->route('login')->with('status', __($status))
         : back()->withErrors(['email' => [__($status)]]);
 })->middleware('guest')->name('password.update');
-
     
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::patch('/tickets/{ticket}/assign-agent', [AgentController::class, 'update']);
+
     Route::apiResource('categories', CategoryController::class);
     Route::apiResource('tickets', TicketController::class);
     Route::apiResource('comments', CommentController::class);

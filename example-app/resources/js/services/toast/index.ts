@@ -15,11 +15,13 @@ export const toastStore = reactive({
     this.toasts.push({ id, message, type });
 
     setTimeout(() => {
-      this.toasts = this.toasts.filter(t => t.id !== id);
+      const index = this.toasts.findIndex(t => t.id === id);
+      if (index !== -1) this.toasts.splice(index, 1);
     }, duration);
   },
 
   remove(id: number) {
-    this.toasts = this.toasts.filter(t => t.id !== id);
+    const index = this.toasts.findIndex(t => t.id === id);
+    if (index !== -1) this.toasts.splice(index, 1);
   },
 });

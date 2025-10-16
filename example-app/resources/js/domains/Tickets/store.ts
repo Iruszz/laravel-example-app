@@ -37,6 +37,15 @@ export const fetchTickets = async () => {
     }
 };
 
+export const assignAgentToTicket = async (ticketId: number, agentId: number) => {
+    try {
+        const { data } = await axios.patch(`/api/tickets/${ticketId}/assign-agent`, { agent_id: agentId });
+        return data;
+    } catch (error) {
+        console.error('Failed to assign agent:', error);
+    }
+};
+
 export const addTicket = (ticket: Ticket) => {
     tickets.value = [...tickets.value, ticket];
 };
