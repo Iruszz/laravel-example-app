@@ -3,6 +3,7 @@ import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { getRequest } from '../../../services/http';
 import { commentStore } from '../../Comments/index';
+import ErrorMessage from '../../../services/components/ErrorMessage.vue';
 import Form from '../../Comments/components/FormShowPage.vue';
 import Status from '../components/Status.vue';
 
@@ -13,14 +14,10 @@ const ticket = ref(null);
 const ticketId = Number(route.params.ticket);
 
 commentStore.actions.getAll();
-const comments = computed(() => {
-    const c = commentStore.getters.getCommentsByTicketId(ticketId);
-    return c?.value || [];
-});
+const comments =  commentStore.getters.getCommentsByTicketId(ticketId);
 
 const comment = ref({
     ticket_id: ticketId,
-    name: '',
     comment: ''
 });
 
@@ -41,15 +38,13 @@ const timeAgo = (dateStr) => {
 
 const handleSubmit = async (item) => {
     await commentStore.actions.create(item);
-    router.push({ name: 'tickets.show' });
+    router.push({ name: 'ticket.show' });
 };
 
 onMounted(async () => {
     const { data } = await getRequest(`/tickets/${ticketId}`);
     ticket.value = data;
 });
-
-console.log('Comments', comments.value);
 
 const deleteComment = (id) => {
     commentStore.actions.delete(id);
@@ -153,18 +148,13 @@ const deleteComment = (id) => {
                                     <Form :comment="comment" @submit="handleSubmit" />
                                 </div>
                             </section>
-                        </div>
+                    </div>
 
             </div>
 
 
 
         </section>
-
-
-
-
-
   </main>
 </div>
 </template>

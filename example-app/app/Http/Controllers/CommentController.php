@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ApiResponse;
 use App\Http\Resources\CommentResource;
 use App\Models\Comment;
+use App\Notifications\NewCommentNotification;
 use Illuminate\Http\Request;
 
 class CommentController extends Controller
@@ -32,24 +34,35 @@ class CommentController extends Controller
         $data = $request->validate([
             'ticket_id' => 'required|exists:tickets,id',
             'comment' => 'required|string',
-            'name' => 'nullable|string',
         ]);
         $user = auth()->user();
         $ticket = \App\Models\Ticket::findOrFail($data['ticket_id']);
 
-        // Set recipient_id based on user_id
-        if ($user->id == 2) {
-            // Admin sends to ticket owner
-            $data['recipient_id'] = $ticket->user_id;
-        } else {
-            // User sends to admin (user_id 2)
-            $data['recipient_id'] = 2;
+        if ($user->id !== $ticket->user_id && $user->id !== $ticket->agent_id) {
+            return ApiResponse::forbidden(
+                'You are not authorized to comment on this ticket.',
+                'COMMENT_FORBIDDEN',
+                ['ticket_id' => $ticket->id]
+            );
         }
+
         $data['user_id'] = $user->id;
+        $data['recipient_id'] = $user->id === $ticket->user_id
+            ? $ticket->agent_id
+            : $ticket->user_id;
 
         $comment = \App\Models\Comment::create($data);
 
-        return response()->json($comment, 201);
+        $recipient = $comment->recipient;
+        if ($recipient) {
+            $recipient->notify(new NewCommentNotification($comment));
+        }
+
+        $comments = Comment::with('user')
+        ->where('ticket_id', $data['ticket_id'])
+        ->get();
+
+        return response()->json($comments, 201);
     }
 
     /**

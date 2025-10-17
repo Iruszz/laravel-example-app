@@ -1,4 +1,4 @@
-import axios from 'axios';
+ import axios from 'axios';
 import { ref, computed } from 'vue';
 import { getRequest } from '../../services/http';
 
@@ -9,6 +9,7 @@ interface Comment {
   ticket_id: number;
   created_at?: string;
   updated_at?: string;
+  recipient_id: number;
 }
 
 // state
@@ -16,14 +17,12 @@ const comments = ref<Comment[]>([]);
 
 // getters
 export const getAllComments = computed(() => comments.value);
-export const getCommentsByTicketId = (ticketId: number) =>
-    computed(() => comments.value.filter(c => c.ticket_id === ticketId));
 
 // actions
 export const fetchComments = async () => {
     const { data } = await getRequest('/comments');
     if (!data) return;
-    comments.value = data; // adjust if backend is paginated: data.data
+    comments.value = data;
 };
 
 export const addComment = (comment: Comment) => {

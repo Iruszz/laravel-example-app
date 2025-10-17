@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\TicketController;
+use App\Http\Middleware\IsAdminMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -78,17 +79,16 @@ Route::post('/reset-password', function (Request $request) {
 })->middleware('guest')->name('password.update');
     
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
-    Route::patch('/tickets/{ticket}/assign-agent', [AgentController::class, 'update']);
-
     Route::apiResource('categories', CategoryController::class);
     Route::apiResource('tickets', TicketController::class);
     Route::apiResource('comments', CommentController::class);
+});
 
-    // Alleen voor admin auth admin?
+Route::middleware(['auth:sanctum', 'verified', IsAdminMiddleware::class])->group(function () {
+    Route::put('/tickets/{ticket}/assign-agent', [AgentController::class, 'update']);
     Route::apiResource('users', UserController::class);
     Route::apiResource('agents', AgentController::class);
 });
-
 
 
 

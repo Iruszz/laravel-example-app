@@ -3,11 +3,11 @@ import { ref, onMounted } from 'vue';
 import { ticketStore } from '../../Tickets/index';
 import { assignAgentToTicket } from '../../Tickets/store';
 import { userStore } from '../../Auth/index';
-import { agentStore } from '../../Agents';
+import { agentStore } from '..';
 import ErrorMessage from '../../../services/components/ErrorMessage.vue';
 import FormError from '../../../services/components/FormError.vue';
 import { useRoute, useRouter } from 'vue-router';
-import { getAllAgents } from './../../Agents/store';
+import { getAllAgents } from '../store';
 
 const router = useRouter();
 const route = useRoute();

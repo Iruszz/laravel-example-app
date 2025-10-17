@@ -37,14 +37,18 @@ http.interceptors.response.use(
                 setMessage('Please verify your email before continuing.');
                 router.push({ name: 'emailVerification.overview' });
             }
-            if (error.response.status === 403) {
-            const code = error.response.data.code;
-            if (code === 'TICKET_FORBIDDEN') {
+            if (error.response.status === 403 && error.response.data.code === 'TICKET_FORBIDDEN') {
                 toastStore.add('You are not authorized to view this ticket.', 'error');
-            } else if (code === 'AGENT_ASSIGNMENT_FORBIDDEN') {
-                toastStore.add('Only admins can assign agents.', 'error');
+                router.push({ name: 'tickets.overview' });
             }
-            router.push({ name: 'tickets.overview' });
+            if (error.response.status === 403 && error.response.data.code === 'AGENT_ASSIGNMENT_FORBIDDEN') {
+                toastStore.add('Only admins can assign agents.', 'error');
+                router.push({ name: 'tickets.overview' });
+            }
+            if (error.response.status === 403 && error.response.data.code === 'COMMENT_FORBIDDEN') {
+                const ticketId = error.response.data.ticket_id;
+                toastStore.add('You are not authorized to comment on this ticket.', 'error');
+                router.push({ name: 'tickets.show', params: { id: ticketId } });
             }
         }
         return Promise.reject(error);

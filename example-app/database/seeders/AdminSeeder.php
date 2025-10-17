@@ -14,16 +14,22 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
-        $faker = Faker::create();
+        $admins = [
+            ['name' => 'Admin One', 'email' => 'admin1@example.com'],
+            ['name' => 'Admin Two', 'email' => 'admin2@example.com'],
+            ['name' => 'Admin Three', 'email' => 'admin3@example.com'],
+        ];
 
-        for ($i = 0; $i < 3; $i++) {
-            User::create([
-                'name' => $faker->name,
-                'email' => $faker->unique()->safeEmail,
-                'password' => Hash::make('password'),
-                'is_admin' => true,
-                'email_verified_at' => now(),
-            ]);
+        foreach ($admins as $admin) {
+            User::updateOrCreate(
+                ['email' => $admin['email']], // avoid duplicates
+                [
+                    'name' => $admin['name'],
+                    'password' => Hash::make('password'), // default password
+                    'is_admin' => true,
+                    'email_verified_at' => now(),
+                ]
+            );
         }
     }
 }

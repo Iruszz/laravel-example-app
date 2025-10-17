@@ -12,7 +12,6 @@ class TicketSeeder extends Seeder
         $normalUsers = User::where('is_admin', false)->get();
 
         foreach ($normalUsers as $user) {
-            // Assign between 1 and 5 tickets randomly
             $ticketCount = rand(1, 5);
 
             Ticket::factory()->count($ticketCount)->create([

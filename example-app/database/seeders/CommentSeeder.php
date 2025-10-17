@@ -4,26 +4,24 @@ namespace Database\Seeders;
 
 use App\Models\Comment;
 use App\Models\Ticket;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class CommentSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        $tickets = Ticket::with('user')->get();
-        $adminId = 2; // Specific admin user_id
+        $tickets = Ticket::with(['user', 'agent'])->get();
 
         foreach ($tickets as $ticket) {
-            // Alternate sender: user, admin, user, admin
+            if (!$ticket->agent) {
+                continue;
+            }
+
             $senders = [
-                ['user_id' => $ticket->user_id, 'recipient_id' => $adminId],
-                ['user_id' => $adminId, 'recipient_id' => $ticket->user_id],
-                ['user_id' => $ticket->user_id, 'recipient_id' => $adminId],
-                ['user_id' => $adminId, 'recipient_id' => $ticket->user_id],
+                ['user_id' => $ticket->user_id, 'recipient_id' => $ticket->agent->id],
+                ['user_id' => $ticket->agent->id, 'recipient_id' => $ticket->user_id],
+                ['user_id' => $ticket->user_id, 'recipient_id' => $ticket->agent->id],
+                ['user_id' => $ticket->agent->id, 'recipient_id' => $ticket->user_id],
             ];
 
             foreach ($senders as $sender) {

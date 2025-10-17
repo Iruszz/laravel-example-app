@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Helpers\ApiResponse;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,7 +16,7 @@ class TicketController extends Controller
         $user = Auth::user();
 
         if (!$user) {
-            return response()->json(['message' => 'Unauthorized'], 401);
+            return ApiResponse::unauthorized('You must be logged in.');
         }
 
         $tickets = Ticket::with(['user', 'status', 'category', 'agent'])
@@ -33,10 +34,7 @@ class TicketController extends Controller
         $user = Auth::user();
 
         if ($request->user()->cannot('view', $ticket)) {
-            return response()->json([
-                'message' => 'Forbidden',
-                'code' => 'TICKET_FORBIDDEN',
-            ], 403);
+            return ApiResponse::forbidden('You cannot view this ticket.', 'TICKET_FORBIDDEN');
         }
 
         $ticket->load(['user', 'category', 'status']);

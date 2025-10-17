@@ -10,8 +10,7 @@ const title = "Create comment"
 const description = "Here you can create the comment"
 
 const comment = ref({
-    title: '',
-    summary: '',
+    comment: '',
     comment_id: null
 });
 

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { ref, computed } from 'vue';
-import { getRequest } from '../../services/http';
+import { getRequest, putRequest } from '../../services/http';
 import { setMessage, destroyMessage } from '../../services/error';
 
 interface Ticket {
@@ -39,7 +39,7 @@ export const fetchTickets = async () => {
 
 export const assignAgentToTicket = async (ticketId: number, agentId: number) => {
     try {
-        const { data } = await axios.patch(`/api/tickets/${ticketId}/assign-agent`, { agent_id: agentId });
+        const { data } = await putRequest(`/tickets/${ticketId}/assign-agent`, { agent_id: agentId });
         return data;
     } catch (error) {
         console.error('Failed to assign agent:', error);

@@ -27,7 +27,7 @@ class TicketPolicy
     {
         return $user->is_admin
             ? Response::allow()
-            : Response::denyWithStatus(403, 'Only admins can assign agents.');
+            : Response::denyWithStatus(403);
     }
 
 
