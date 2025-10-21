@@ -3,6 +3,7 @@
 use App\Http\Controllers\AgentController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
@@ -10,7 +11,6 @@ use App\Http\Controllers\TicketController;
 use App\Http\Middleware\IsAdminMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Models\User;
 use Illuminate\Auth\Events\Verified;
 
@@ -43,40 +43,16 @@ Route::post('/email/verification-notification', function (Request $request) {
     return response()->json(['message' => 'Verification link sent!']);
 })->middleware(['auth:sanctum', 'throttle:6,1'])->name('verification.send');
 
-
 Route::post('/login', [LoginController::class, 'login'])->name('login.perform');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout.perform');
 
 Route::post('/register', [RegisterController::class, 'store'])->name('register.perform');
 
-Route::get('/forgot-password', function () {
-})->middleware('guest')->name('password.request');
+Route::post('/forgot-password', [PasswordResetController::class, 'forgotPassword'])->middleware('guest')->name('password.email');
 
-Route::post('/reset-password', function (Request $request) {
-    $request->validate([
-        'token' => 'required',
-        'email' => 'required|email',
-        'password' => 'required|min:8|confirmed',
+Route::get('/reset-password/{token}', [PasswordResetController::class, 'resetPasswordToken'])->middleware('guest')->name('password.reset');
 
-    ]);
-
-    $status = Password::reset(
-        $request->only('email', 'password', 'password_confirmation', 'token'),
-        function (User $user, string $password) {
-            $user->forceFill([
-                'password' => Hash::make($password)
-            ])->setRememberToken(Str::random(60));
-
-            $user->save();
-
-            event(new PasswordReset($user));
-        }
-    );
-
-    return $status === Password::PasswordReset
-        ? redirect()->route('login')->with('status', __($status))
-        : back()->withErrors(['email' => [__($status)]]);
-})->middleware('guest')->name('password.update');
+Route::post('/reset-password', [PasswordResetController::class, 'resetPassword'])->middleware('guest')->name('password.update');
     
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::apiResource('categories', CategoryController::class);

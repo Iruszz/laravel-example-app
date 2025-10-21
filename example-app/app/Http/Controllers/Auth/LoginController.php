@@ -18,17 +18,18 @@ class LoginController extends Controller
             'password' => 'required',
         ]);
 
-        if (Auth::attempt($credentials)) {
-            
-            $request->session()->regenerate();
-            
-            return Auth::user();
-
+        if (!Auth::attempt($credentials)) {
+            return response()->json([
+                'message' => 'Login failed.',
+                'errors' => [
+                    'email' => ['Email is incorrect.'],
+                    'password' => ['Password is incorrect.'],
+                ]
+            ], 422);
         }
 
-        return response()->json([
-            'message' => 'Email en/of wachtwoord kloppen niet, doe iets beter..'
-        ], 422);
+
+        $request->session()->regenerate();
     }
 
     public function logout(Request $request)

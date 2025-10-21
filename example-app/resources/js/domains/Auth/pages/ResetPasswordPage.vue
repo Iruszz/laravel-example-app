@@ -2,28 +2,32 @@
 import { ref } from 'vue';
 import ErrorMessage from '../../../services/components/ErrorMessage.vue';
 import FormError from '../../../services/components/FormError.vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { setErrorBag, setMessage, destroyErrors, destroyMessage } from '../../../services/error';
 import { getRequest, postRequest } from '../../../services/http';
+
+const route = useRoute()
+
+const form = ref({
+    email: route.query.email || '',
+    password: '',
+    password_confirmation: '',
+    token: route.params.token || '',
+});
+
+const router = useRouter();
+
+const error = ref('');
 
 const handleSubmit = async () => {
     destroyErrors();
     destroyMessage();
 
-    const router = useRouter();
-
-    const form = ref({
-        email: '',
-        password: ''
-    });
-
-    const error = ref('');
-
     try {
         await getRequest('/sanctum/csrf-cookie');
         const { data } = await postRequest('/reset-password', form.value);
 
-        router.push({ name: 'login' });
+        router.push({ name: 'login.overview' });
     } catch(error) {
         setErrorBag(error.response?.data.errors || {});
         setMessage(error.response?.data.message || 'Password reset failed.');
@@ -46,18 +50,21 @@ const handleSubmit = async () => {
           <form @submit.prevent="handleSubmit" class="mt-4 space-y-4 lg:mt-5 md:space-y-5" action="#">
               <div>
                     <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
-                    <input type="email" name="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name@company.com" required="">
+                    <input type="email" name="email" id="email" v-model="form.email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name@company.com" required="">
                     <FormError name="email" />
                 </div>
               <div>
                     <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">New Password</label>
-                    <input type="password" name="password" id="password" placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required="">
+                    <input type="password" name="password" id="password" v-model="form.password" placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required="">
                     <FormError name="password" />
                 </div>
-              <div>
+                <div>
                     <label for="confirm-password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm password</label>
-                    <input type="confirm-password" name="confirm-password" id="confirm-password" placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required="">
-                    <FormError name="confirm-password" />
+                    <input type="password" name="password_confirmation" id="confirm-password" v-model="form.password_confirmation" placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required="">
+                    <FormError name="password_confirmation" />
+                </div>
+                <div>
+                    <input type="hidden" name="token" id="token" v-model="form.token" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required="">
                 </div>
               <div class="flex items-start">
                   <div class="flex items-center h-5">
