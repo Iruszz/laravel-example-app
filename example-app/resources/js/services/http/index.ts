@@ -22,12 +22,23 @@ http.interceptors.request.use(
 );
 
 http.interceptors.response.use(
-    response => response,
+    response => {
+            if (response.status === 200 && response.data.code === 'passwordReset') {
+                console.log('test');
+                toastStore.add(response.data.message, 'success');
+                router.push({ name: 'login.overview' });
+            }
+            return response;
+    },
     error => {
         if (error.response) {
             if (error.response.status === 422) {
                 setErrorBag(error.response.data.errors);
                 setMessage(error.response.data.message);
+            }
+            if (error.response.status === 400 && error.response.data.code === 'PASSWORD_RESET_FAILED') {
+                toastStore.add(error.response.data.message, 'error');
+                router.push({ name: 'password-reset-request.overview' });
             }
             if (error.response.status === 401) {
                 toastStore.add('You must be logged in to access this page.', 'error');

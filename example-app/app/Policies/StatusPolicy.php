@@ -11,7 +11,7 @@ class StatusPolicy
     /**
      * Create a new policy instance.
      */
-    public function Update(User $user, Status $ticket)
+    public function update(User $user, Status $ticket)
     {
         return $user->is_admin
             ? Response::allow()

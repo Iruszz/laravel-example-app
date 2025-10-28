@@ -8,11 +8,15 @@ use Illuminate\Http\Request;
 
 class StatusController extends Controller
 {
-    public function update(StoreStatusRequest $request, Status $status)
+    public function update(Request $request, Status $status)
     {
-        $status->update($request->validated());
+        $this->authorize('update', $status);
 
-        $statuss = Status::with(['user', 'status', 'category'])->get();
-        return response()->json($statuss);
+        $status->name = 'solved';
+        $status->save();
+
+        $status->load(['user', 'status', 'category']);
+
+        return response()->json($status);
     }
 }
