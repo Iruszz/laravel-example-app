@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\StatusController;
 use App\Http\Controllers\TicketController;
 use App\Http\Middleware\IsAdminMiddleware;
 use Illuminate\Http\Request;
@@ -61,9 +62,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 });
 
 Route::middleware(['auth:sanctum', 'verified', IsAdminMiddleware::class])->group(function () {
-    Route::put('/tickets/{ticket}/assign-agent', [AgentController::class, 'update']);
+    Route::put('/tickets/{ticket}/assign-agent', [TicketController::class, 'updateAgent']);
+    Route::put('/tickets/{ticket}', [TicketController::class, 'updateStatus']);
     Route::apiResource('users', UserController::class);
-    Route::apiResource('agents', AgentController::class);
+    // Route::apiResource('agents', AgentController::class);
 });
 
 

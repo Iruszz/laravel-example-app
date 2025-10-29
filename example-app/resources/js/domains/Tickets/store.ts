@@ -46,6 +46,24 @@ export const assignAgentToTicket = async (ticketId: number, agentId: number) => 
     }
 };
 
+export const updateStatus = async (ticketId: number, statusId: number) => {
+    try {
+        const { data } = await putRequest(`/tickets/${ticketId}`, { status_id: statusId });
+        if (!data) return;
+
+        const index = tickets.value.findIndex(t => t.id === data.id);
+
+        if (index !== -1) {
+            tickets.value[index] = data;
+        }
+
+        return data;
+    } catch (error) {
+        console.error('Failed to change status:', error);
+    }
+};
+
+
 export const addTicket = (ticket: Ticket) => {
     tickets.value = [...tickets.value, ticket];
 };

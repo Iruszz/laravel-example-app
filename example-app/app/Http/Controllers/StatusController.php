@@ -3,17 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreStatusRequest;
+use App\Http\Requests\UpdateStatusRequest;
 use App\Models\Status;
 use Illuminate\Http\Request;
 
 class StatusController extends Controller
 {
-    public function update(Request $request, Status $status)
+    public function update(UpdateStatusRequest $request, Status $status)
     {
         $this->authorize('update', $status);
 
         $status->name = 'solved';
         $status->save();
+
+        $status->update($request->validated());
 
         $status->load(['user', 'status', 'category']);
 

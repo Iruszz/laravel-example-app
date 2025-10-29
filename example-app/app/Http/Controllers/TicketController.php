@@ -6,6 +6,8 @@ use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreTicketRequest;
+use App\Http\Requests\UpdateAgentRequest;
+use App\Http\Requests\UpdateStatusRequest;
 use App\Models\User;
 
 class TicketController extends Controller
@@ -63,6 +65,31 @@ class TicketController extends Controller
     {
         $ticket->update($request->validated());
 
+        $tickets = Ticket::with(['user', 'status', 'category'])->get();
+        return response()->json($tickets);
+    }
+
+    public function updateStatus(UpdateStatusRequest $request, Ticket $ticket)
+    {
+        // $this->authorize('update', $ticket);
+
+        $ticket->update($request->validated());
+
+        $ticket->load(['user', 'status', 'category']);
+        return response()->json($ticket);
+    }
+
+    public function updateAgent(UpdateAgentRequest $request, Ticket $ticket)
+    {
+        if ($request->user()->cannot('assignAgent', $ticket)) {
+            return ApiResponse::forbidden(
+                'Only admins are allowed to assign agents to tickets.', 
+                'AGENT_ASSIGNMENT_FORBIDDEN'
+            );
+        }
+
+        $ticket->update($request->validated());
+        
         $tickets = Ticket::with(['user', 'status', 'category'])->get();
         return response()->json($tickets);
     }

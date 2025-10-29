@@ -7,6 +7,8 @@ import { setMessage, destroyMessage } from '../../../services/error';
 import Status from '../components/Status.vue';
 import { initFlowbite } from 'flowbite'
 import { useRoute, useRouter } from 'vue-router';
+import { updateStatus } from '../store';
+import { putRequest } from '../../../services/http';
 
 const route = useRoute();
 const router = useRouter();
@@ -52,10 +54,12 @@ function deleteConfirm(ticketId: number) {
     }
 }
 
-const markAsSolved = async (data) => {
-    await statusStore.actions.update(route.params.id, data);
-    router.push({ name: 'tickets.overview' });
+const setAsSolved = 2;
+
+const markAsSolved = async (ticketId, setAsSolved) => {
+    await putRequest(ticketId, setAsSolved);
 }
+
 </script>
 
 <template>
@@ -188,7 +192,7 @@ const markAsSolved = async (data) => {
                                     <ul class="py-2 text-sm font-medium text-gray-700 dark:text-gray-400" aria-labelledby="dropdownMenuIconHorizontalButton">
                                         <li>
                                             <button type="button" class="flex block px-4 py-2 mx-2 gap-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                            @submit="markAsSolved(ticket.id)">
+                                            @click="markAsSolved(ticket.id, setAsSolved)">
                                                 <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12 4.7 4.5 9.3-9"></path>
                                                 </svg>
