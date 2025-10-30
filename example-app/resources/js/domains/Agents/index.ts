@@ -7,7 +7,7 @@ export const AgentStore = storeModuleFactory(ADMIN_DOMAIN_NAME);
 
 export const agentStore = {
     getters:  {
-        ...AgentStore.getters,
+        ...AgentStore.getters,        
     },
     setters: AgentStore.setters,
     actions: {

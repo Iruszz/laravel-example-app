@@ -1,9 +1,11 @@
 import {storeModuleFactory} from '../../services/store';
+import { postRequest } from '../../services/http'
 import { computed } from 'vue';
+import { Comment } from './types'
 
 export const PROJECT_DOMAIN_NAME = 'comments';
 
-export const baseProjectStore = storeModuleFactory(PROJECT_DOMAIN_NAME);
+export const baseProjectStore = storeModuleFactory<Comment>(PROJECT_DOMAIN_NAME);
 
 export const commentStore = {
     getters:  {
@@ -16,6 +18,6 @@ export const commentStore = {
     },
     setters: baseProjectStore.setters,
     actions: {
-        ...baseProjectStore.actions
+        ...baseProjectStore.actions,
     },
 };

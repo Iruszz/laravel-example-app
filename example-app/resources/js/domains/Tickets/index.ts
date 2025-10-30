@@ -1,6 +1,5 @@
 import { putRequest } from '../../services/http';
 import {storeModuleFactory} from '../../services/store';
-import axios from 'axios';
 import { New, State, Updatable } from '../../services/store/types';
 import { Ticket } from './types';
 
@@ -15,22 +14,21 @@ export const ticketStore = {
     setters: baseProjectStore.setters,
     actions: {
         ...baseProjectStore.actions,
-
-        updateStatus: async (tickets: State<Ticket>, ticketId: number, statusId: number) => {
+        assignAgentToTicket: async (ticketId: number, agentId: number | null) => {
             try {
-                const { data } = await putRequest(`${PROJECT_DOMAIN_NAME}/${ticketId}`, { status_id: statusId });
-                if (!data) return;
-
-                const index = tickets.value.findIndex(t => t.id === data.id);
-
-                if (index !== -1) {
-                    tickets.value[index] = data;
-                }
-
+                const { data } = await putRequest(`${PROJECT_DOMAIN_NAME}/${ticketId}/assign-agent`, { agent_id: agentId });
                 return data;
             } catch (error) {
-                console.error('Failed to change status:', error);
+                console.error('Failed to assign agent:', error);
             }
+        },
+        updateStatus: async (ticketId: number, statusId: number) => {
+            const { data } = await putRequest(`${PROJECT_DOMAIN_NAME}/${ticketId}`, { status_id: statusId });
+            if (!data) return;
+
+            baseProjectStore.setters.setById(data);
+
+            return data;
         },
     },
 };

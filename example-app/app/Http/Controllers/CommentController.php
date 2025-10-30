@@ -3,13 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
+use App\Http\Requests\StoreCommentRequest;
+use App\Http\Requests\UpdateCommentRequest;
 use App\Http\Resources\CommentResource;
 use App\Models\Comment;
+use App\Models\Ticket;
 use App\Notifications\NewCommentNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
+
+    protected function loadRelations(Comment $comment)
+    {
+        return $comment->load(['ticket', 'user', 'recipient']);
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -29,13 +39,13 @@ class CommentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreCommentRequest $request)
     {
-        $data = $request->validate([
-            'ticket_id' => 'required|exists:tickets,id',
-            'comment' => 'required|string',
-        ]);
-        $user = auth()->user();
+        $data = $request->validated();
+        $ticket = Ticket::findOrFail($data['ticket_id']);
+        $this->authorize('create', $ticket);
+
+        $user = Auth::user();
         $ticket = \App\Models\Ticket::findOrFail($data['ticket_id']);
 
         if ($user->id !== $ticket->user_id && $user->id !== $ticket->agent_id) {
@@ -62,7 +72,9 @@ class CommentController extends Controller
         ->where('ticket_id', $data['ticket_id'])
         ->get();
 
-        return response()->json($comments, 201);
+        return (new CommentResource($this->loadRelations($comment)))
+            ->response()
+            ->setStatusCode(201);
     }
 
     /**
@@ -84,12 +96,14 @@ class CommentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Comment $comment)
+    public function update(UpdateCommentRequest $request, Comment $comment)
     {
+        $this->authorize('update', $comment);
+
         $comment->update($request->validated());
 
-        $comments = Review::all();
-        return ReviewResource::collection($comments);
+        $comments = Comment::with(['ticket', 'user', 'recipient'])->get();
+        return CommentResource::collection($comments);
     }
 
     /**

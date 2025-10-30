@@ -1,5 +1,4 @@
 <script setup>
-import { computed } from 'vue';
 
 const statusColors = {
     'yellow-500': { text: 'text-yellow-500', bg: 'bg-yellow-900' },

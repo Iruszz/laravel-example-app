@@ -44,7 +44,7 @@ export const storeModuleFactory = <T extends {id: number}>(moduleName: string) =
         create: async (newItem: New<T>) =>  {
             const { data } = await postRequest(moduleName, newItem);
             if (!data) return;
-            setters.setAll(data);
+            setters.setById(data);
         },
 
         update: async (id: number, item: Updatable<T>) => {

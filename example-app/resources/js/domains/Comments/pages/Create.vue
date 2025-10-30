@@ -16,7 +16,6 @@ const comment = ref({
 
 const handleSubmit = async (item) => {
     await commentStore.actions.create(item);
-    router.push({name: 'comments.overview'});
 };
 </script>
 

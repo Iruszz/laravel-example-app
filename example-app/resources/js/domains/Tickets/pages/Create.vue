@@ -1,9 +1,8 @@
-<script setup>
+<script setup lang="ts">
 import Form from '../components/Form.vue';
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
 import { ticketStore } from '..';
-import { createTicket } from '../store';
 
 const router = useRouter();
 
@@ -16,9 +15,9 @@ const ticket = ref({
     agent_id: null,
 });
 
-const handleSubmit = async (item) => {
+const handleSubmit = async (item: any) => {
     try {
-        await createTicket(item);
+        await ticketStore.actions.create(item);
         router.push({ name: 'tickets.overview' });
     } catch (err) {
         console.error(err);

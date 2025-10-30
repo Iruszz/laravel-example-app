@@ -13,15 +13,15 @@ const commentId = Number(route.params.id);
 
 commentStore.actions.getAll();
 
-const comment = commentStore.getters.getById(commentId);
+const comment = commentStore.getters.byId(commentId);
 
 const handleSubmit = async (updatedComment) => {
     await commentStore.actions.update(commentId, updatedComment);
-    router.push({ name: 'tickets.show', params: { id: updatedComment.ticket_id }})
+    router.push({ name: 'ticket.show', params: { ticket: updatedComment.ticket_id }})
 };
 
 const cancel = (comment) => {
-    router.push({ name: 'tickets.show', params: { id: comment.ticket_id }})
+    router.push({ name: 'ticket.show', params: { ticket: comment.ticket_id }})
 };
 
 </script>

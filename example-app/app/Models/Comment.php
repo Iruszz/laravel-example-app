@@ -21,4 +21,9 @@ class Comment extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function recipient()
+    {
+        return $this->belongsTo(User::class, 'recipient_id');
+    }
 }

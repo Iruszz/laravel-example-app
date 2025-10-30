@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Ticket;
+use App\Models\Comment;
 use App\Models\User;
 
 class CommentPolicy
@@ -17,7 +18,11 @@ class CommentPolicy
 
     public function create(User $user, Ticket $ticket)
     {
-        // Only ticket owner or assigned agent can create a comment
-        return $user->id === $ticket->user_id || $user->id === $ticket->agent_id;
+        return $user->id === $ticket->user_id || $user->id === $ticket->agent_id;    
+    }
+
+    public function update(User $user, Comment $comment)
+    {
+        return $user->id === $comment->user_id;
     }
 }

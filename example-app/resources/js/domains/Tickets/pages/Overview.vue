@@ -1,17 +1,10 @@
 <script setup lang="ts">
-import { onMounted, computed, nextTick, ref, reactive } from 'vue';
+import { onMounted, nextTick } from 'vue';
 import { ticketStore } from '..';
-import { statusStore } from '../../Status';
 import ErrorMessage from '../../../services/components/ErrorMessage.vue';
 import { setMessage, destroyMessage } from '../../../services/error';
 import Status from '../components/Status.vue';
-import { initFlowbite } from 'flowbite'
-import { useRoute, useRouter } from 'vue-router';
-import { updateStatus } from '../store';
-import { putRequest } from '../../../services/http';
-
-const route = useRoute();
-const router = useRouter();
+import { initFlowbite } from 'flowbite';
 
 destroyMessage();
 
@@ -33,7 +26,7 @@ onMounted(async () => {
     initFlowbite();
 });
 
-const tickets = computed(() => Object.values(ticketStore.getters.all.value));
+const tickets = ticketStore.getters.all;
 
 function formatDate(dateString: string) {
     const date = new Date(dateString);
@@ -44,6 +37,10 @@ function formatDate(dateString: string) {
     });
 }
 
+const markAsSolved = async (ticketId: number) => {
+    await ticketStore.actions.updateStatus(ticketId, 2);
+}
+
 const deleteTicket = (id: number) => {
     ticketStore.actions.delete(id);
 };
@@ -52,12 +49,6 @@ function deleteConfirm(ticketId: number) {
     if (confirm("The ticket is being deleted together with the reviews")) {
         deleteTicket(ticketId);
     }
-}
-
-const setAsSolved = 2;
-
-const markAsSolved = async (ticketId, setAsSolved) => {
-    await putRequest(ticketId, setAsSolved);
 }
 
 </script>
@@ -192,7 +183,7 @@ const markAsSolved = async (ticketId, setAsSolved) => {
                                     <ul class="py-2 text-sm font-medium text-gray-700 dark:text-gray-400" aria-labelledby="dropdownMenuIconHorizontalButton">
                                         <li>
                                             <button type="button" class="flex block px-4 py-2 mx-2 gap-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                            @click="markAsSolved(ticket.id, setAsSolved)">
+                                            @click="markAsSolved( ticket.id )">
                                                 <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12 4.7 4.5 9.3-9"></path>
                                                 </svg>
@@ -221,7 +212,7 @@ const markAsSolved = async (ticketId, setAsSolved) => {
                                     </ul>
                                     <ul class="py-2 px-2 text-sm font-medium text-gray-700 dark:text-gray-400">
                                         <li>
-                                            <button type="button" id="deleteInvoiceButton" data-modal-target="deleteTicketModal" 
+                                            <button type="button" id="deleteInvoiceButton"
                                                 class="flex w-full px-4 py-2 gap-2 rounded-lg text-sm text-red-700 hover:bg-red-100 dark:hover:bg-gray-600 dark:text-red-500"
                                                 @click="deleteConfirm(ticket.id)">
                                                 <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">

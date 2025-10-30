@@ -8,10 +8,17 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreTicketRequest;
 use App\Http\Requests\UpdateAgentRequest;
 use App\Http\Requests\UpdateStatusRequest;
+use App\Http\Resources\TicketResource;
 use App\Models\User;
 
 class TicketController extends Controller
 {
+
+    protected function loadRelations(Ticket $ticket)
+    {
+        return $ticket->load(['user', 'status', 'category', 'agent']);
+    }
+
 
     public function index()
     {
@@ -28,7 +35,7 @@ class TicketController extends Controller
                         ->orderBy('created_at', 'desc')
                         ->get();
         
-        return response()->json($tickets);
+        return TicketResource::collection($tickets);
     }
 
     public function show(Request $request, Ticket $ticket)
@@ -39,9 +46,7 @@ class TicketController extends Controller
             return ApiResponse::forbidden('You cannot view this ticket.', 'TICKET_FORBIDDEN');
         }
 
-        $ticket->load(['user', 'category', 'status']);
-
-        return response()->json($ticket);
+        return new TicketResource($this->loadRelations($ticket));
     }
 
     public function store(StoreTicketRequest $request)
@@ -58,25 +63,25 @@ class TicketController extends Controller
             'ticket_id' => $ticket->id,
         ]);
 
-        return response()->json($ticket, 201);
+        return (new TicketResource($ticket))
+            ->response()
+            ->setStatusCode(201);
     }
 
     public function update(StoreTicketRequest $request, Ticket $ticket)
     {
         $ticket->update($request->validated());
 
-        $tickets = Ticket::with(['user', 'status', 'category'])->get();
-        return response()->json($tickets);
+        return new TicketResource($this->loadRelations($ticket));
     }
 
     public function updateStatus(UpdateStatusRequest $request, Ticket $ticket)
     {
-        // $this->authorize('update', $ticket);
+        $this->authorize('update', $ticket);
 
         $ticket->update($request->validated());
 
-        $ticket->load(['user', 'status', 'category']);
-        return response()->json($ticket);
+        return new TicketResource($this->loadRelations($ticket));
     }
 
     public function updateAgent(UpdateAgentRequest $request, Ticket $ticket)
@@ -90,13 +95,13 @@ class TicketController extends Controller
 
         $ticket->update($request->validated());
         
-        $tickets = Ticket::with(['user', 'status', 'category'])->get();
-        return response()->json($tickets);
+        return new TicketResource($this->loadRelations($ticket));
     }
 
     public function destroy($id)
     {
         Ticket::findOrFail($id)->delete();
-        return response()->json(null, 204);
+
+        return response()->noContent();
     }
 }
