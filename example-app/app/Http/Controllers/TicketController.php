@@ -70,9 +70,11 @@ class TicketController extends Controller
 
     public function update(StoreTicketRequest $request, Ticket $ticket)
     {
+        $this->authorize('update', $ticket);
         $ticket->update($request->validated());
 
-        return new TicketResource($this->loadRelations($ticket));
+        $ticket->load(['user', 'status', 'category', 'agent']);
+        return new TicketResource($ticket);
     }
 
     public function updateStatus(UpdateStatusRequest $request, Ticket $ticket)

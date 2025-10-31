@@ -2,6 +2,7 @@
 import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { getRequest } from '../../../services/http';
+import { userStore } from '../../Auth/index';
 import { ticketStore } from '..';
 import { commentStore } from '../../Comments/index';
 import ErrorMessage from '../../../services/components/ErrorMessage.vue';
@@ -11,8 +12,8 @@ import Status from '../components/Status.vue';
 const route = useRoute();
 const router = useRouter();
 
-const ticket = ref(null);
 const ticketId = Number(route.params.ticket);
+const ticket = ticketStore.getters.byId(ticketId);
 
 commentStore.actions.getAll();
 const comments =  commentStore.getters.getCommentsByTicketId(ticketId);
@@ -20,6 +21,12 @@ const comments =  commentStore.getters.getCommentsByTicketId(ticketId);
 const comment = ref({
     ticket_id: ticketId,
     comment: ''
+});
+
+const user = userStore.getters.currentUser;
+
+const isOwnerOrAgent = computed(() => {
+  return user.id === ticket.user_id || user.id === ticket.agent_id;
 });
 
 const formatTime = (dateStr) => {
@@ -42,7 +49,7 @@ const handleSubmit = async (item: any) => {
         await commentStore.actions.create(item);
         router.push({ name: 'ticket.show' });
     } catch (err) {
-        console.error(err);
+            console.error(err);
     }
 };
 
@@ -150,7 +157,7 @@ const deleteComment = (id: number) => {
                                     </button>
                                 </div>
                             </article>
-                            <Form :comment="comment" @submit="handleSubmit" />
+                            <Form v-if="isOwnerOrAgent" :comment="comment" @submit="handleSubmit" />
                         </div>
                     </section>
                 </div>

@@ -11,7 +11,7 @@ const form = ref({ title: '', description: '' });
 
 const ticketId = Number(route.params.id);
 ticketStore.actions.getAll();
-const ticket = ticketStore.getters.getById(ticketId);
+const ticket = ticketStore.getters.byId(ticketId);
 
 const title = "Edit ticket"
 const description = "Here you can edit the ticket"
@@ -24,7 +24,7 @@ onMounted(async () => {
 });
 
 const handleSubmit = async (data) => {
-    await ticketStore.actions.update(route.params.id, data);
+    await ticketStore.actions.update(ticketId, data);
     router.push({ name: 'tickets.overview' });
 };
 </script>

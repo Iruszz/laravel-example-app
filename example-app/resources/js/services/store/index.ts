@@ -26,6 +26,7 @@ export const storeModuleFactory = <T extends {id: number}>(moduleName: string) =
         setById: (item: T) => {
             state.value[item.id] = Object.freeze(item);
         },
+
         /**
          * Delete one specific item in the storage by id
          */
@@ -50,7 +51,7 @@ export const storeModuleFactory = <T extends {id: number}>(moduleName: string) =
         update: async (id: number, item: Updatable<T>) => {
             const { data } = await putRequest(`${moduleName}/${id}`, item);
             if (!data) return;
-            setters.setAll(data);
+            setters.setById(data);
         },
 
         delete: async (id: number) => {
