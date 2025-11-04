@@ -17,6 +17,11 @@ export const userStore = {
     setters: baseProjectStore.setters,
     actions: {
         ...baseProjectStore.actions,
+        async fetchCurrentUser() {
+            const { data } = await axios.get('/api/me');
+            baseProjectStore.setters.setCurrent(data);
+            return data;
+        },
         updateAgent: async (id: number, updatedAgent: Partial<User>) => {
             const { data } = await axios.put(`/api/admins/${id}`, updatedAgent);
             if (!data) return;

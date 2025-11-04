@@ -1,5 +1,5 @@
-import { putRequest } from '../../services/http';
-import {storeModuleFactory} from '../../services/store';
+import { putRequest, patchRequest } from '../../services/http';
+import { storeModuleFactory } from '../../services/store';
 import { New, State, Updatable } from '../../services/store/types';
 import { Ticket } from './types';
 
@@ -23,11 +23,8 @@ export const ticketStore = {
             }
         },
         updateStatus: async (ticketId: number, statusId: number) => {
-            const { data } = await putRequest(`${PROJECT_DOMAIN_NAME}/${ticketId}`, { status_id: statusId });
+            const { data } = await patchRequest(`${PROJECT_DOMAIN_NAME}/${ticketId}/status`, { status_id: statusId });
             if (!data) return;
-
-            baseProjectStore.setters.setById(data);
-
             return data;
         },
     },

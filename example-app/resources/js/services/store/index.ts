@@ -4,6 +4,7 @@ import { New, State, Updatable } from './types';
 
 export const storeModuleFactory = <T extends {id: number}>(moduleName: string) => {
     const state: State<T> = ref({});
+    const current = ref<T | null>(null);
     const getters = {
         /** Get all items from the store */
         all: computed(() => Object.values(state.value)),
@@ -11,6 +12,7 @@ export const storeModuleFactory = <T extends {id: number}>(moduleName: string) =
          * Get an item from the state by id
          */
         byId: (id: number) => computed(() => state.value[id]),
+        current: computed(() => current.value),
     };
 
     const setters = {
@@ -20,6 +22,7 @@ export const storeModuleFactory = <T extends {id: number}>(moduleName: string) =
         setAll: (items: T[]) => {
             for (const item of items) state.value[item.id] = Object.freeze(item);
         },
+        setCurrent: (item: T | null) => current.value = item,
         /**
          * Set one specific item in the storage
          */

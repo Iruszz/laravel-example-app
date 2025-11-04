@@ -23,7 +23,7 @@ const comment = ref({
     comment: ''
 });
 
-const user = userStore.getters.currentUser;
+const currentUser = userStore.getters.current;
 
 const isOwnerOrAgent = computed(() => {
   return user.id === ticket.user_id || user.id === ticket.agent_id;
@@ -56,6 +56,10 @@ const handleSubmit = async (item: any) => {
 onMounted(async () => {
     const { data } = await getRequest(`/tickets/${ticketId}`);
     ticket.value = data;
+
+    if (!currentUser.value) {
+        const user = await userStore.actions.fetchCurrentUser();
+    }
 });
 
 const deleteComment = (id: number) => {

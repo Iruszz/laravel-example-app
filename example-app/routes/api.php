@@ -61,11 +61,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::apiResource('comments', CommentController::class);
 });
 
+Route::middleware(['auth:sanctum'])->get('/me', [UserController::class, 'current']);
+
 Route::middleware(['auth:sanctum', 'verified', IsAdminMiddleware::class])->group(function () {
     Route::put('/tickets/{ticket}/assign-agent', [TicketController::class, 'updateAgent']);
-    Route::put('/tickets/{ticket}/status', [TicketController::class, 'updateStatus']);
+    Route::patch('/tickets/{ticket}/status', [TicketController::class, 'updateStatus']);
     Route::apiResource('users', UserController::class);
-    // Route::apiResource('agents', AgentController::class);
 });
 
 
