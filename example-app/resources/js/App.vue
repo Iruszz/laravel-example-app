@@ -14,6 +14,10 @@
                       class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white">
                       Add new Ticket
                   </router-link>
+                  <router-link v-if="isAdmin" :to="{name: 'categories.overview'}"
+                      class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white">
+                      Category Overview
+                  </router-link>
               </div>
             </div>
           </div>

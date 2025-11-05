@@ -2,33 +2,33 @@
 
 namespace App\Notifications;
 
-use App\Models\Comment;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Log;
 
-class NewCommentNotification extends Notification implements ShouldQueue
+class NewCommentNotification extends Notification
 {
     use Queueable;
 
-    public Comment $comment;
+    protected $comment;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(Comment $comment)
+    public function __construct($comment)
     {
         $this->comment = $comment;
     }
 
     /**
      * Get the notification's delivery channels.
+     *
+     * @return array<int, string>
      */
     public function via(object $notifiable): array
     {
-        return ['mail', 'database'];
+        return ['mail'];
     }
 
     /**
@@ -36,24 +36,31 @@ class NewCommentNotification extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
-        Log::info("Sending NewCommentNotification to user {$notifiable->id}");
+        $ticket = $this->comment->ticket;
+        $user = $this->comment->user;
+
+        $url = url("/tickets/{$ticket->id}#comment-{$this->comment->id}");
         
         return (new MailMessage)
-            ->subject('New comment on your ticket #' . $this->comment->ticket_id)
-            ->greeting('Hello ' . $notifiable->name . ',')
-            ->line('You have received a new comment on your ticket:')
-            ->line('“' . $this->comment->comment . '”')
-            ->line('From: ' . $this->comment->user->name)
-            ->action('View Ticket', url('/tickets/' . $this->comment->ticket_id))
+            ->subject("New Comment on Ticket #{$ticket->id}")
+            ->greeting("Hello {$notifiable->name},")
+            ->line("{$user->name} added a new comment on ticket \"{$ticket->title}\":")
+            ->line("\"{$this->comment->comment}\"")
+            ->action('View Ticket', $url)
             ->line('Thank you for using our support system!');
     }
 
-    public function toDatabase(object $notifiable): array
+    /**
+     * Get the array representation of the notification.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(object $notifiable): array
     {
         return [
             'ticket_id' => $this->comment->ticket_id,
             'comment_id' => $this->comment->id,
-            'message' => 'New comment on your ticket from ' . $this->comment->user->name,
+            'comment_comment' => $this->comment->comment,
         ];
     }
 }

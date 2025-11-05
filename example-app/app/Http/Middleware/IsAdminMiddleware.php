@@ -18,9 +18,24 @@ class IsAdminMiddleware
     {
         $user = $request->user();
 
-    if (! $user || ! $user->is_admin) {
-        return ApiResponse::forbidden('Only admins can assign agents.', 'AGENT_ASSIGNMENT_FORBIDDEN');
-    }
+        if (! $user || ! $user->is_admin) {
+
+            if ($request->is('tickets/*/assign-agent')) {
+                return ApiResponse::forbidden(
+                    'Only admins can assign agents.',
+                    'AGENT_ASSIGNMENT_FORBIDDEN'
+                );
+            }
+
+            if ($request->is('categories') || $request->is('categories/*')) {
+                return ApiResponse::forbidden(
+                    'Only admins can access categories.',
+                    'CATEGORY_FORBIDDEN'
+                );
+            }
+
+            return ApiResponse::forbidden('You are not authorized.', 'FORBIDDEN');
+        }
 
         return $next($request);
     }

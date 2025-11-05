@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreTicketRequest;
 use App\Http\Requests\UpdateAgentRequest;
 use App\Http\Requests\UpdateStatusRequest;
+use App\Http\Requests\UpdateTicketRequest;
 use App\Http\Resources\TicketResource;
 use App\Models\User;
 
@@ -29,11 +30,11 @@ class TicketController extends Controller
         }
 
         $tickets = Ticket::with(['user', 'status', 'category', 'agent'])
-                        ->when($user && !$user->is_admin, function($query) use ($user) {
-                            $query->where('user_id', $user->id);
-                        })
-                        ->orderBy('created_at', 'desc')
-                        ->get();
+            ->when($user && !$user->is_admin, function($query) use ($user) {
+                $query->where('user_id', $user->id);
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
         
         return TicketResource::collection($tickets);
     }
@@ -68,7 +69,7 @@ class TicketController extends Controller
             ->setStatusCode(201);
     }
 
-    public function update(StoreTicketRequest $request, Ticket $ticket)
+    public function update(UpdateTicketRequest $request, Ticket $ticket)
     {
         $this->authorize('update', $ticket);
         $ticket->update($request->validated());
@@ -79,7 +80,7 @@ class TicketController extends Controller
 
     public function updateStatus(UpdateStatusRequest $request, Ticket $ticket)
     {
-        // $this->authorize('update', $ticket);
+        $this->authorize('update', $ticket);
 
         $ticket->status_id = $request->validated()['status_id'];
         $ticket->save();

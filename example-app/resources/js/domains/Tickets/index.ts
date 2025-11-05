@@ -23,9 +23,9 @@ export const ticketStore = {
             }
         },
         updateStatus: async (ticketId: number, statusId: number) => {
-            const { data } = await patchRequest(`${PROJECT_DOMAIN_NAME}/${ticketId}/status`, { status_id: statusId });
+            const { data } = await putRequest(`${PROJECT_DOMAIN_NAME}/${ticketId}/status`, { status_id: statusId });
             if (!data) return;
-            return data;
+            baseProjectStore.setters.setById(data);
         },
     },
 };

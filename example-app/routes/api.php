@@ -56,7 +56,6 @@ Route::get('/reset-password/{token}', [PasswordResetController::class, 'resetPas
 Route::post('/reset-password', [PasswordResetController::class, 'resetPassword'])->middleware('guest')->name('password.update');
     
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
-    Route::apiResource('categories', CategoryController::class);
     Route::apiResource('tickets', TicketController::class);
     Route::apiResource('comments', CommentController::class);
 });
@@ -64,10 +63,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 Route::middleware(['auth:sanctum'])->get('/me', [UserController::class, 'current']);
 
 Route::middleware(['auth:sanctum', 'verified', IsAdminMiddleware::class])->group(function () {
+    Route::apiResource('categories', CategoryController::class);
+    Route::put('/categories/{category}', [CategoryController::class, 'update']);
     Route::put('/tickets/{ticket}/assign-agent', [TicketController::class, 'updateAgent']);
-    Route::patch('/tickets/{ticket}/status', [TicketController::class, 'updateStatus']);
+    Route::put('/tickets/{ticket}/status', [TicketController::class, 'updateStatus']);
     Route::apiResource('users', UserController::class);
 });
-
-
-

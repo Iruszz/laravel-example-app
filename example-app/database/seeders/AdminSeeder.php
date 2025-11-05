@@ -22,10 +22,10 @@ class AdminSeeder extends Seeder
 
         foreach ($admins as $admin) {
             User::updateOrCreate(
-                ['email' => $admin['email']], // avoid duplicates
+                ['email' => $admin['email']],
                 [
                     'name' => $admin['name'],
-                    'password' => Hash::make('password'), // default password
+                    'password' => Hash::make('password'),
                     'is_admin' => true,
                     'email_verified_at' => now(),
                 ]

@@ -3,24 +3,24 @@ import { ref, onMounted, computed, nextTick } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { getRequest } from '../../../services/http';
 import { userStore } from '../../Auth/index';
-import { ticketStore } from '..';
+import { categoryStore } from '..';
 import { commentStore } from '../../Comments/index';
 import ErrorMessage from '../../../services/components/ErrorMessage.vue';
 import Form from '../../Comments/components/FormShowPage.vue';
-import Status from '../components/Status.vue';
-import { Ticket } from '../types';
+// import Status from '../components/Status.vue';
+import { Category } from '../types';
 
 const route = useRoute();
 const router = useRouter();
 
-const ticketId = Number(route.params.ticket);
-const ticket = ref<Ticket | null>(null);
+const categoryId = Number(route.params.category);
+const category = ref<Category | null>(null);
 
 commentStore.actions.getAll();
-const comments =  commentStore.getters.getCommentsByTicketId(ticketId);
+// const comments =  commentStore.getters.getCommentsByCategoryId(categoryId);
 
 const comment = ref({
-    ticket_id: ticketId,
+    category_id: categoryId,
     comment: ''
 });
 
@@ -28,7 +28,7 @@ const currentUser = userStore.getters.current;
 
 const isOwnerOrAgent = computed(() => {
   const u = currentUser.value;
-  const t = ticket.value;
+  const t = category.value;
   if (!u || !t) return false;
   return u.id === t.user_id || u.id === t.agent_id;
 });
@@ -51,7 +51,7 @@ const timeAgo = (dateStr) => {
 const handleSubmit = async (item: any) => {
     try {
         await commentStore.actions.create(item);
-        router.push({ name: 'ticket.show' });
+        router.push({ name: 'category.show' });
     } catch (err) {
             console.error(err);
     }
@@ -59,12 +59,12 @@ const handleSubmit = async (item: any) => {
 
 onMounted(async () => {
   try {
-    const storedTicket: Ticket | undefined = ticketStore.getters.byId(ticketId)?.value;
-    if (storedTicket) {
-      ticket.value = storedTicket;
+    const storedCategory: Category | undefined = categoryStore.getters.byId(categoryId)?.value;
+    if (storedCategory) {
+      category.value = storedCategory;
     } else {
-      const { data } = await getRequest(`/tickets/${ticketId}`);
-      ticket.value = data;
+      const { data } = await getRequest(`/categories/${categoryId}`);
+      category.value = data;
     }
 
     await nextTick();
@@ -94,16 +94,16 @@ const deleteComment = (id: number) => {
 <template>
 <ErrorMessage />
 <div class="min-h-full">
-    <header v-if="ticket" class="relative bg-gray-800 after:pointer-events-none after:absolute after:inset-x-0 after:inset-y-0 after:border-y after:border-white/10">
+    <header v-if="category" class="relative bg-gray-800 after:pointer-events-none after:absolute after:inset-x-0 after:inset-y-0 after:border-y after:border-white/10">
         <div class="flex items-center space-x-5 mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-            <h1 class="text-3xl font-bold tracking-tight text-white">Ticket #{{ ticket.id }}</h1>
-            <Status :ticket="ticket"/>
+            <h1 class="text-3xl font-bold tracking-tight text-white">Category #{{ category.id }}</h1>
+            <Status :category="category"/>
         </div>
     </header>
 
     <main>
         <section
-            v-if="ticket"
+            v-if="category"
             class="bg-white md:py-5 mx-10 dark:bg-gray-900 antialiased border-b border-white/10"
         >
             <div class="flex-inline items-start max-w-screen-xl mx-auto 2xl:px-0">
@@ -111,7 +111,7 @@ const deleteComment = (id: number) => {
                     <!-- Left column -->
                     <div>
                         <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">
-                        {{ ticket.title }}
+                        {{ category.title }}
                         </h1>
                         <p class="text-gray-500 dark:text-gray-400">
                         Via email
@@ -121,11 +121,11 @@ const deleteComment = (id: number) => {
                     <!-- Right column -->
                     <div class="text-right">
                         <p class="text-gray-500 dark:text-gray-400">
-                        {{ new Date(ticket.created_at).toLocaleDateString('en-US', { weekday: 'short' }) }},
-                        <time :datetime="ticket.created_at">
-                            {{ formatTime(ticket.created_at) }}
+                        {{ new Date(category.created_at).toLocaleDateString('en-US', { weekday: 'short' }) }},
+                        <time :datetime="category.created_at">
+                            {{ formatTime(category.created_at) }}
                         </time>
-                        {{ timeAgo(ticket.created_at) }}
+                        {{ timeAgo(category.created_at) }}
                         </p>
                     </div>
                 </div>
@@ -186,7 +186,7 @@ const deleteComment = (id: number) => {
                                     </button>
                                 </div>
                             </article>
-                            <Form v-if="isOwnerOrAgent" :comment="comment" @submit="handleSubmit" />
+                            <!-- <Form v-if="isOwnerOrAgent" :comment="comment" @submit="handleSubmit" /> -->
                         </div>
                     </section>
                 </div>

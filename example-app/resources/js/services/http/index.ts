@@ -61,6 +61,10 @@ http.interceptors.response.use(
                 toastStore.add('You are not authorized to comment on this ticket.', 'error');
                 router.push({ name: 'tickets.show', params: { id: ticketId } });
             }
+            if (error.response.status === 403 && error.response.data.code === 'CATEGORY_FORBIDDEN') {
+                toastStore.add('Only admins can access categories.', 'error');
+                router.push({ name: 'categories.overview' });
+            }
         }
         return Promise.reject(error);
     }

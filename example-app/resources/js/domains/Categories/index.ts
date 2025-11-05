@@ -1,8 +1,9 @@
 import {storeModuleFactory} from '../../services/store';
+import { Category } from './types';
 
 export const PROJECT_DOMAIN_NAME = 'categories';
 
-export const baseProjectStore = storeModuleFactory(PROJECT_DOMAIN_NAME);
+export const baseProjectStore = storeModuleFactory<Category>(PROJECT_DOMAIN_NAME);
 
 export const categoryStore = {
     getters:  {

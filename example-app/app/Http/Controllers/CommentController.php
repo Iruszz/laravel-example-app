@@ -10,10 +10,13 @@ use App\Models\Comment;
 use App\Models\Ticket;
 use App\Notifications\NewCommentNotification;
 use Illuminate\Http\Request;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\NewMessage;
 
 class CommentController extends Controller
 {
+    use Notifiable;
 
     protected function loadRelations(Comment $comment)
     {
