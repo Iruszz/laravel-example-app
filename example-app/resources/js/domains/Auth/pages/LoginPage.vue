@@ -5,6 +5,7 @@ import FormError from '../../../services/components/FormError.vue';
 import { useRouter } from 'vue-router';
 import { setErrorBag, setMessage, destroyErrors, destroyMessage } from '../../../services/error';
 import { getRequest, postRequest } from '../../../services/http';
+import { getLoggedInUser, login } from '../store';
 
 const router = useRouter();
 
@@ -21,12 +22,16 @@ const handleSubmit = async () => {
 
   try {
     await getRequest('/sanctum/csrf-cookie');
-    const { data } = await postRequest('/login', form.value);
+    
+    await login(form.value);
+
+    console.log(getLoggedInUser.value);
 
     router.push({ name: 'tickets.overview' });
+
   } catch(error) {
-      setErrorBag(error.response?.data.errors || {});
-      setMessage(error.response?.data.message || 'Login failed.');
+    setErrorBag(error.response?.data.errors || {});
+    setMessage(error.response?.data.message || 'Login failed.');
   }
 }
 </script>

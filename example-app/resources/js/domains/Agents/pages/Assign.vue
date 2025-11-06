@@ -12,7 +12,6 @@ const router = useRouter();
 const route = useRoute();
 
 const ticketId = Number(route.params.id);
-const tickets = ticketStore.getters.all;
 const ticket = ticketStore.getters.byId(ticketId);
 
 userStore.actions.getAll();

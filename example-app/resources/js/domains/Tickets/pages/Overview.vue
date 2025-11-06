@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { onMounted, nextTick, ref } from 'vue';
-import { userStore } from '../../Auth/';
+import { onMounted, nextTick, ref, computed } from 'vue';
 import { ticketStore } from '..';
 import ErrorMessage from '../../../services/components/ErrorMessage.vue';
 import { setMessage, destroyMessage } from '../../../services/error';
 import Status from '../components/Status.vue';
 import { initFlowbite } from 'flowbite';
+import { orderBy } from '../../../services/helpers';
+import { getLoggedInUser } from '../../Auth/store';
 
 destroyMessage();
 
@@ -21,23 +22,17 @@ const fetchTickets = async () => {
     }
 };
 
+const currentUser = computed(() => getLoggedInUser.value);
 
-const currentUser = userStore.getters.current;
+const tickets = computed(() =>
+    orderBy(ticketStore.getters.all.value, 'created_at', false)
+);
 
 onMounted(async () => {
     await fetchTickets();
-    if (!currentUser.value) {
-        await userStore.actions.fetchCurrentUser();
-    }
-    console.log('Current user1:', !currentUser.value)
-    console.log('Current user2:', currentUser.value);
-    console.log('Is admin:', currentUser.value?.is_admin);
-
     await nextTick(); 
     initFlowbite();
 });
-
-const tickets = ticketStore.getters.all;
 
 function formatDate(dateString: string) {
     const date = new Date(dateString);
@@ -61,7 +56,6 @@ function deleteConfirm(ticketId: number) {
         deleteTicket(ticketId);
     }
 }
-
 </script>
 
 <template>
@@ -193,7 +187,7 @@ function deleteConfirm(ticketId: number) {
                                 >
                                     <ul class="py-2 text-sm font-medium text-gray-700 dark:text-gray-400" aria-labelledby="dropdownMenuIconHorizontalButton">
                                         <li>
-                                            <button v-if="currentUser?.is_admin" type="button" class="flex block px-4 py-2 mx-2 gap-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                            <button v-if="getLoggedInUser?.is_admin" type="button" class="flex block px-4 py-2 mx-2 gap-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                                             @click="markAsSolved( ticket.id )">
                                                 <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12 4.7 4.5 9.3-9"></path>
@@ -202,7 +196,7 @@ function deleteConfirm(ticketId: number) {
                                             </button>
                                         </li>
                                         <li>
-                                            <RouterLink v-if="currentUser?.is_admin" class="flex block px-4 py-2 mx-2 gap-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                            <RouterLink v-if="getLoggedInUser?.is_admin" class="flex block px-4 py-2 mx-2 gap-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                                                 :to="{ name: 'ticket.assign', params: { id: ticket.id } }">
                                                 <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
                                                     <path fill-rule="evenodd" d="M8 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4H6Zm7.3-2a6 6 0 0 0 0-6A4 4 0 0 1 20 8a4 4 0 0 1-6.7 3Zm2.2 9a4 4 0 0 0 .5-2v-1a6 6 0 0 0-1.5-4H18a4 4 0 0 1 4 4v1a2 2 0 0 1-2 2h-4.5Z" clip-rule="evenodd"></path>
@@ -221,7 +215,7 @@ function deleteConfirm(ticketId: number) {
                                             </RouterLink>
                                         </li>
                                     </ul>
-                                    <ul v-if="currentUser?.is_admin" class="py-2 px-2 text-sm font-medium text-gray-700 dark:text-gray-400">
+                                    <ul v-if="getLoggedInUser?.is_admin" class="py-2 px-2 text-sm font-medium text-gray-700 dark:text-gray-400">
                                         <li>
                                             <button type="button" id="deleteInvoiceButton"
                                                 class="flex w-full px-4 py-2 gap-2 rounded-lg text-sm text-red-700 hover:bg-red-100 dark:hover:bg-gray-600 dark:text-red-500"

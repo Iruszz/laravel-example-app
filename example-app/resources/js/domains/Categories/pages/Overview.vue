@@ -1,12 +1,19 @@
 <script setup lang="ts">
-import { onMounted, nextTick, ref } from 'vue';
+import { onMounted, nextTick, ref, computed } from 'vue';
 import { userStore } from '../../Auth/';
 import { categoryStore } from '..';
 import ErrorMessage from '../../../services/components/ErrorMessage.vue';
 import { setMessage, destroyMessage } from '../../../services/error';
 import { initFlowbite } from 'flowbite';
+import { orderBy } from '../../../services/helpers';
 
 destroyMessage();
+
+const categories = computed(() =>
+    orderBy(categoryStore.getters.all.value, 'title')
+);
+
+const currentUser = userStore.getters.current;
 
 const fetchCategories = async () => {
     try {
@@ -20,23 +27,14 @@ const fetchCategories = async () => {
     }
 };
 
-
-const currentUser = userStore.getters.current;
-
 onMounted(async () => {
     await fetchCategories();
     if (!currentUser.value) {
         await userStore.actions.fetchCurrentUser();
     }
-    console.log('Current user1:', !currentUser.value)
-    console.log('Current user2:', currentUser.value);
-    console.log('Is admin:', currentUser.value?.is_admin);
-
     await nextTick(); 
     initFlowbite();
 });
-
-const categories = categoryStore.getters.all;
 
 function formatDate(dateString: string) {
     const date = new Date(dateString);
@@ -52,7 +50,7 @@ const deleteCategory = (id: number) => {
 };
 
 function deleteConfirm(categoryId: number) {
-    if (confirm("The category is being deleted together with the reviews")) {
+    if (confirm("The category is being deleted")) {
         deleteCategory(categoryId);
     }
 }
@@ -66,29 +64,12 @@ function deleteConfirm(categoryId: number) {
             <div class="flex-1 overflow-x-auto">
                 <div class="flex h-full items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 px-15 pb-4 bg-white dark:bg-gray-900">
                     <div>
-                        <button id="dropdownActionButton" data-dropdown-toggle="dropdownAction" class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button">
+                        <RouterLink
+                            class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            :to="{ name: 'category.create' }">
                             <span class="sr-only">Action button</span>
-                            Action
-                            <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-                            </svg>
-                        </button>
-                        <div id="dropdownAction" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700 dark:divide-gray-600">
-                            <ul class="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownActionButton">
-                                <li>
-                                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Reward</a>
-                                </li>
-                                <li>
-                                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Promote</a>
-                                </li>
-                                <li>
-                                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Activate account</a>
-                                </li>
-                            </ul>
-                            <div class="py-1">
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Delete User</a>
-                            </div>
-                        </div>
+                            Create new category
+                        </RouterLink>
                     </div>
                     <label for="table-search" class="sr-only">Search</label>
                     <div class="relative">
@@ -97,7 +78,7 @@ function deleteConfirm(categoryId: number) {
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
                             </svg>
                         </div>
-                        <input type="text" id="table-search-users" class="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for users">
+                        <input type="text" id="table-search-users" class="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for category">
                     </div>
                 </div>
 
@@ -223,7 +204,7 @@ function deleteConfirm(categoryId: number) {
             </div>
         </div>
     
-        <div class="relative pb-15 overflow-x-auto shadow-md sm:rounded-lg">
+        <div v-else class="relative pb-15 overflow-x-auto shadow-md sm:rounded-lg">
             <div class="relative pb-15 overflow-x-auto shadow-md sm:rounded-lg">
                 <div class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                     <p>You have not categories yet</p>

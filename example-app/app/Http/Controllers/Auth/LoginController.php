@@ -30,6 +30,10 @@ class LoginController extends Controller
 
 
         $request->session()->regenerate();
+        return response()->json([
+            'message' => 'Login successful.',
+            'user' => Auth::user(),
+        ]);
     }
 
     public function logout(Request $request)

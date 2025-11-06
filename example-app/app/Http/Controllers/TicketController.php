@@ -33,7 +33,6 @@ class TicketController extends Controller
             ->when($user && !$user->is_admin, function($query) use ($user) {
                 $query->where('user_id', $user->id);
             })
-            ->orderBy('created_at', 'desc')
             ->get();
         
         return TicketResource::collection($tickets);
@@ -52,6 +51,7 @@ class TicketController extends Controller
 
     public function store(StoreTicketRequest $request)
     {
+        $this->authorize('create', Ticket::class);
         $data = $request->validated();
 
         $data['user_id'] = Auth::id();

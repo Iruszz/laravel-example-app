@@ -31,6 +31,10 @@ class CategoryPolicy
             : Response::denyWithStatus(404);
     }
 
+    public function Create(User $user) {
+        return $user->is_admin;
+    }
+
     public function Update(User $user, Category $category)
     {
         if ($user->is_admin) {

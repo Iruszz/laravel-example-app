@@ -1,44 +1,35 @@
-import axios from 'axios';
 import { ref, computed } from 'vue';
-import { getRequest } from '../../services/http';
+import { getRequest, postRequest } from '../../services/http';
+import { Credentials } from './types';
+import { User } from '../User/types';
+import { router, goToRoute, goToOverviewPage } from '../../router';
+import axios from 'axios';
 
-// state
-const users = ref([]);
+const loggedInUser = ref<User | null>(null);
 
-// getters
-export const getAllUsers = computed(() => users.value);
+export const isLoggedIn = computed(() => loggedInUser.value !== null);
+export const getLoggedInUser = computed(() => loggedInUser.value);
 
-// actions
-export const fetchUsers = async () => {
-    const {data} = await getRequest('/users');
-    if(!data) return;
-    users.value = data;
+export const login = async (credentials: Credentials) => {
+  const { data } = await postRequest('login', credentials);
+  if (!data) return;
+  loggedInUser.value = data.user;
 };
 
-export const registerUser = async (newUser) => {
-    const {data} = await axios.post('/api/register', newUser);
-    if(!data) return
-    users.value = data;
+export const logout = async () => {
+  await axios.post('/api/logout');
+  loggedInUser.value = null;
 };
 
-export const getUserById = (id) => computed(() => users.value.find(user => user.id == id));
-
-export const getAdminById = () => computed(() => users.value.find(user => user.is_admin == true));
-
-export const updateUser = async (id, updatedUser) => {
-    const { data } = await axios.put(`/api/users/${id}`, updatedUser);
-    if (!data) return;
-    users.value = data;
+export const me = async () => {
+  const { data } = await getRequest('me');
+  if (!data) return;
+  loggedInUser.value = data;
 };
 
-export const loginUser = async (credentials) => {
-    const { data } = await axios.post(`/api/login`, credentials);
-    if (!data) return;
-    users.value = data;
+export const checkIfLoggedIn = async () => {
+  const { data } = await getRequest('me');
+  loggedInUser.value = data.user;
 };
 
-
-export const deleteUser = async (id) => {
-    await axios.delete(`/api/users/${id}`);
-    users.value = users.value.filter(user => user.id !== id);
-};
+export const goToLoginPage = () => goToRoute('Login');

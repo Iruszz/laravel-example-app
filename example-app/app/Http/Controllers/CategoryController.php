@@ -20,6 +20,8 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
+        $this->authorize('create', Category::class);
+        
         $category = Category::create($request->validate([
             'title' => 'required|string|max:255',
         ]));

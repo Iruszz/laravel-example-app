@@ -1,6 +1,4 @@
-export interface User {
-  id: number;
-  name: string;
+export interface Credentials {
   email: string;
-  is_admin: boolean;
+  password: string;
 }

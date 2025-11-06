@@ -1,25 +1,48 @@
-<script setup>
-import { ref } from 'vue';
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
 import ErrorMessage from '../../../services/components/ErrorMessage.vue';
 import FormError from '../../../services/components/FormError.vue';
-import { useRouter } from 'vue-router';
-import { registerUser } from './../store';
+import { getRequest, postRequest } from '../../../services/http';
+import { login } from '../store';
+import { useRoute } from 'vue-router';
+import { goToOverviewPage } from '../../../router';
+import { PROJECT_DOMAIN_NAME } from '../../Tickets'
+import type { User } from '../../User/types';
 
-const router = useRouter();
+const route = useRoute();
 
-const form = ref({
+const newCredentials = ref({ password: '', repeatedPassword: '' });
+
+const userToRegister = ref<User>({
+    id: 0,
     name: '',
     email: '',
-    password: ''
+    inviteToken: '',
+    is_admin: false,
 });
 
-const error = ref('');
+const getUserToRegister = async (token: string) => {
+    const { data } = await getRequest(`get-user-to-register/${token}`);
+    if (!data) return;
+    userToRegister.value = data;
+};
 
-const handleSubmit = async () => {
-    await registerUser(form.value);
-    
-    router.push({ path: '/verify-email', query: { email: form.value.email } });
-}
+const submit = async () => {
+    // Register the user with the token
+    await postRequest(`register/${userToRegister.value.inviteToken}`, newCredentials.value);
+
+    // Log in immediately after registration
+    await login({ email: userToRegister.value.email, password: newCredentials.value.password });
+
+    // Redirect to the default overview page
+    goToOverviewPage(PROJECT_DOMAIN_NAME);
+};
+
+// Fetch the user when the page loads
+onMounted(() => {
+    const token = route.query.token as string;
+    if (token) getUserToRegister(token);
+});
 </script>
 
 <template>
@@ -32,13 +55,13 @@ const handleSubmit = async () => {
   </div>
 
   <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-    <form @submit.prevent="handleSubmit" class="space-y-6">
+    <form @submit.prevent="submit" class="space-y-6">
         <div>
             <div class="flex items-center justify-between">
                 <label for="name" class="block text-sm/6 font-medium text-gray-100">Name</label>
             </div>
             <div class="mt-2">
-                <input v-model="form.name" id="name" type="name" name="name" required autocomplete="current-name" class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6" />
+                <input v-model="userToRegister.name" id="name" type="name" name="name" required autocomplete="current-name" class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6" />
             </div>
             <FormError name="name" />
         </div>
@@ -46,7 +69,7 @@ const handleSubmit = async () => {
         <div>
             <label for="email" class="block text-sm/6 font-medium text-gray-100">Email address</label>
             <div class="mt-2">
-            <input v-model="form.email" id="email" type="email" name="email" required autocomplete="email" class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6" />
+                <input v-model="userToRegister.email" id="email" type="email" name="email" required autocomplete="email" class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6" />
             </div>
             <FormError name="email" />
         </div>
@@ -56,7 +79,7 @@ const handleSubmit = async () => {
             <label for="password" class="block text-sm/6 font-medium text-gray-100">Password</label>
             </div>
             <div class="mt-2">
-            <input v-model="form.password" id="password" type="password" name="password" required autocomplete="current-password" class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6" />
+                <input v-model="newCredentials.password" id="password" type="password" name="password" required autocomplete="current-password" class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6" />
             </div>
             <FormError name="password" />
         </div>
@@ -67,5 +90,4 @@ const handleSubmit = async () => {
     </form>
   </div>
 </div>
-
 </template>
