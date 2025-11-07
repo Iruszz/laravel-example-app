@@ -1,7 +1,7 @@
 import { ref, computed } from 'vue';
 import { getRequest, postRequest } from '../../services/http';
 import { Credentials } from './types';
-import { User } from '../User/types';
+import { User } from '../Users/types';
 import { router, goToRoute, goToOverviewPage } from '../../router';
 import axios from 'axios';
 

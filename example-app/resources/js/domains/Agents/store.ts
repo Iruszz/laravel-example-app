@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { ref, computed } from 'vue';
 import { getRequest } from '../../services/http';
-import { userStore } from '../Auth/index';
+import { authStore } from '../Auth/index';
 
 // state
 // const users = ref([]);

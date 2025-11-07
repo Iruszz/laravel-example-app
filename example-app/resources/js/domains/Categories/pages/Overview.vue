@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, nextTick, ref, computed } from 'vue';
-import { userStore } from '../../Auth/';
+import { userStore } from '../../Users';
 import { categoryStore } from '..';
 import ErrorMessage from '../../../services/components/ErrorMessage.vue';
 import { setMessage, destroyMessage } from '../../../services/error';

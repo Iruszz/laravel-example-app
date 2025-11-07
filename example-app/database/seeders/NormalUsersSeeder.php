@@ -3,16 +3,18 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\UserRole;
+use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class NormalUsersSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
+        $faker = Faker::create();
+        $roles = UserRole::where('name', '!=', 'Admin')->pluck('id')->toArray();
+
         $users = [
             [
                 'name' => 'Iris Hofman',
@@ -33,6 +35,8 @@ class NormalUsersSeeder extends Seeder
                 'password' => Hash::make($user['password']),
                 'is_admin' => false,
                 'email_verified_at' => now(),
+                'user_role_id' => $faker->randomElement($roles),
+                'phone' => '06' . $faker->numerify('########'),
             ]);
         }
     }

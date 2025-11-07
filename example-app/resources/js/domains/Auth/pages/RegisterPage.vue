@@ -7,13 +7,13 @@ import { login } from '../store';
 import { useRoute } from 'vue-router';
 import { goToOverviewPage } from '../../../router';
 import { PROJECT_DOMAIN_NAME } from '../../Tickets'
-import type { User } from '../../User/types';
+import type { LoggedInUser } from '../types';
 
 const route = useRoute();
 
 const newCredentials = ref({ password: '', repeatedPassword: '' });
 
-const userToRegister = ref<User>({
+const userToRegister = ref<LoggedInUser>({
     id: 0,
     name: '',
     email: '',

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { ticketStore } from '../../Tickets/index';
-import { userStore } from '../../Auth/index';
+import { userStore } from '../../Users';
 import ErrorMessage from '../../../services/components/ErrorMessage.vue';
 import FormError from '../../../services/components/FormError.vue';
 import { useRoute, useRouter } from 'vue-router';

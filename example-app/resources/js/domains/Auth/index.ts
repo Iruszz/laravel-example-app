@@ -1,18 +1,15 @@
 import { storeModuleFactory } from '../../services/store';
-import type { User } from '../User/types';
 import { computed } from 'vue';
 import axios from 'axios';
+import { LoggedInUser } from './types';
 
-export const PROJECT_DOMAIN_NAME = 'users';
+export const PROJECT_DOMAIN_NAME = 'auth';
 
-export const baseProjectStore = storeModuleFactory<User>(PROJECT_DOMAIN_NAME);
+export const baseProjectStore = storeModuleFactory<LoggedInUser>(PROJECT_DOMAIN_NAME);
 
-export const userStore = {
+export const authStore = {
     getters:  {
         ...baseProjectStore.getters,
-        // getAllAgents: computed(() => {
-        //     return (baseProjectStore.getters.all.value as User[]).filter(user => user.is_admin);
-        // }),
     },
     setters: baseProjectStore.setters,
     actions: {

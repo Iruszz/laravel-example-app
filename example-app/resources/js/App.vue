@@ -20,9 +20,6 @@ onMounted(async () => {
       closeDropdown()
     })
     await me();
-    // if (!currentUser.value) {
-    //     await userStore.actions.fetchCurrentUser();
-    // }
     await nextTick();
 });
 
@@ -76,7 +73,10 @@ const handleLogout = async () => {
                       </router-link>                    
                     </li>
                     <li>
-                      <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Settings</a>
+                      <router-link  :to="{name: 'users.overview'}"
+                          class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                          Users
+                      </router-link>                    
                     </li>
                     <li>
                       <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Earnings</a>

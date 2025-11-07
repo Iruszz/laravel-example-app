@@ -40,6 +40,9 @@ http.interceptors.response.use(
                 toastStore.add(error.response.data.message, 'error');
                 router.push({ name: 'password-reset-request.overview' });
             }
+            if (error.response.status === 400 && error.response.data.code === 'DELETE_USER_FAILED') {
+                toastStore.add(error.response.data.message, 'error');
+            }
             if (error.response.status === 401) {
                 toastStore.add('You must be logged in to access this page.', 'error');
                 router.push({ name: 'login.overview' });

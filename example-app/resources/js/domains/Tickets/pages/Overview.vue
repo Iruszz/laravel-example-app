@@ -22,8 +22,6 @@ const fetchTickets = async () => {
     }
 };
 
-const currentUser = computed(() => getLoggedInUser.value);
-
 const tickets = computed(() =>
     orderBy(ticketStore.getters.all.value, 'created_at', false)
 );
@@ -113,10 +111,10 @@ function deleteConfirm(ticketId: number) {
                                 </div>
                             </th>
                             <th scope="col" class="px-6 py-3">
-                                Name
+                                Requested by
                             </th>
                             <th scope="col" class="px-6 py-3">
-                                Title
+                                Subject
                             </th>
                             <th scope="col" class="px-6 py-3">
                                 Agent

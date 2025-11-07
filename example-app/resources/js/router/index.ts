@@ -7,7 +7,7 @@ import { CommentRoutes } from '../domains/Comments/routes';
 import { CategoryRoutes } from '../domains/Categories/routes';
 import ForbiddenPage from '../services/components/ForbiddenPage.vue';
 import { getLoggedInUser, isLoggedIn } from '../domains/Auth/store';
-import { UsersRoutes } from '../domains/User/routes';
+import { UsersRoutes } from '../domains/Users/routes';
 
 // --- Router instance ---
 export const router = createRouter({

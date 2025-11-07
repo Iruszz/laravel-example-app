@@ -2,13 +2,14 @@
 import { ref, onMounted, computed, nextTick } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { getRequest } from '../../../services/http';
-import { userStore } from '../../Auth/index';
+import { userStore } from '../../Users';
 import { ticketStore } from '..';
 import { commentStore } from '../../Comments/index';
 import ErrorMessage from '../../../services/components/ErrorMessage.vue';
 import Form from '../../Comments/components/FormShowPage.vue';
 import Status from '../components/Status.vue';
 import { Ticket } from '../types';
+import { getLoggedInUser } from '../../Auth/store';
 
 const route = useRoute();
 const router = useRouter();
@@ -24,7 +25,7 @@ const comment = ref({
     comment: ''
 });
 
-const currentUser = userStore.getters.current;
+const currentUser = computed(() => getLoggedInUser.value);
 
 const isOwnerOrAgent = computed(() => {
   const u = currentUser.value;

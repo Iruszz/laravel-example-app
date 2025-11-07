@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 // import { ticketStore } from '../index';
 import { categoryStore } from '../../Categories/index';
-import { userStore } from '../../Auth/index';
+import { userStore } from '../../Users';
 import ErrorMessage from '../../../services/components/ErrorMessage.vue';
 import FormError from '../../../services/components/FormError.vue';
 import { useRouter } from 'vue-router';

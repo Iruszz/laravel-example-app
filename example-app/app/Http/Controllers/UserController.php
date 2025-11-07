@@ -26,4 +26,20 @@ class UserController extends Controller
     public function current(Request $request) {
         return new UserResource($request->user());
     }
+
+    public function destroy($id)
+    {
+        $user = User::findOrFail($id);
+
+        if ($user->tickets()->exists()) {
+            return response()->json([
+                'message' => 'Cannot delete user. Tickets are still assigned to this account.',
+                'code' => 'DELETE_USER_FAILED'
+            ], 400);
+        }
+
+        $user->delete();
+
+        return response()->noContent();
+    }
 }
