@@ -9,7 +9,7 @@ import ErrorMessage from '../../../services/components/ErrorMessage.vue';
 import Form from '../../Comments/components/FormShowPage.vue';
 import Status from '../components/Status.vue';
 import { Ticket } from '../types';
-import { getLoggedInUser } from '../../Auth/store';
+import { getLoggedInUser, me } from '../../Auth/store';
 
 const route = useRoute();
 const router = useRouter();
@@ -82,7 +82,7 @@ onMounted(async () => {
   }
 
   if (!currentUser.value) {
-    await userStore.actions.fetchCurrentUser();
+    await me();
   }
 });
 
@@ -107,8 +107,8 @@ const deleteComment = (id: number) => {
             v-if="ticket"
             class="bg-white md:py-5 mx-10 dark:bg-gray-900 antialiased border-b border-white/10"
         >
-            <div class="flex-inline items-start max-w-screen-xl mx-auto 2xl:px-0">
-                <div class="flex items-start justify-between max-w-screen-xl mx-auto 2xl:px-0">
+            <div class="flex-inline divide-y divide-white/5 items-start max-w-screen-xl mx-auto 2xl:px-0">
+                <div class="flex pb-5 items-start justify-between max-w-screen-xl mx-auto 2xl:px-0">
                     <!-- Left column -->
                     <div>
                         <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">
@@ -131,16 +131,17 @@ const deleteComment = (id: number) => {
                     </div>
                 </div>
 
+                <!-- Add Notes -->
 
                 <!-- Comments -->
                 <div class="">
-                    <section class="bg-white  dark:bg-gray-900 py-8 lg:py-16 antialiased">
+                    <section class="bg-white pt-10 dark:bg-gray-900 antialiased">
                         <div class="">
                             <article
                                 v-for="comment in comments"
                                 :key="comment.id"
                                 :id="`comment-${comment.id}`"
-                                class="pb-6 pt-6 text-base bg-white rounded-lg dark:bg-gray-900 mb-4">
+                                class="pb-10 text-base bg-white rounded-lg dark:bg-gray-900 mb-4">
                                 <footer class="flex justify-between items-center mb-2">
                                     <div class="flex items-center">
                                         <p class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">
@@ -171,7 +172,9 @@ const deleteComment = (id: number) => {
                                     <p v-html="comment.comment.replace(/\n/g, '<br>')"></p>
                                 </p>
                                 <div class="flex items-center mt-4 space-x-4">
-                                    <RouterLink :to="{ name: 'comments.edit', params: { id: comment.id } }"
+                                    <RouterLink 
+                                        v-if="currentUser && currentUser.id === comment.user_id"
+                                        :to="{ name: 'comments.edit', params: { id: comment.id } }"
                                         class="flex items-center text-sm text-gray-500 hover:underline dark:text-gray-400 font-medium">
                                         <svg class="mr-1.5 w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 18">
                                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5h5M5 8h2m6-3h2m-5 3h6m2-7H2a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h3v5l5-5h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1Z"/>

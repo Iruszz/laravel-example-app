@@ -21,9 +21,9 @@ class UserPolicy
             return Response::allow();
         }
 
-        if ($authUser->id === $targetUser->id) {
-            return Response::allow();
-        }
+        // if ($authUser->id === $targetUser->id) {
+        //     return Response::allow();
+        // }
 
         return Response::deny('You are not authorized to update this user.', 403);
     }

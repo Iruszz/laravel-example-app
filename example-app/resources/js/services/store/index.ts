@@ -33,6 +33,9 @@ export const storeModuleFactory = <T extends {id: number}>(moduleName: string) =
         deleteById: (id: number) => {
             delete state.value[id];
         },
+        clear: () => {
+             state.value = {};
+        },
     };
 
     const actions = {

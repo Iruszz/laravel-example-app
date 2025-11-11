@@ -3,8 +3,10 @@ import { ref, onMounted, nextTick, computed } from 'vue';
 import { getRequest, postRequest } from './services/http';
 import { useRouter } from 'vue-router';
 import ToastContainer from './services/components/ToastContainer.vue';
-import { userStore } from './domains/Auth';
+import { userStore } from './domains/Users';
 import { getLoggedInUser, me } from './domains/Auth/store';
+import { ticketStore } from './domains/Tickets';
+import { categoryStore } from './domains/Categories';
 
 const router = useRouter();
 
@@ -26,6 +28,9 @@ onMounted(async () => {
 const handleLogout = async () => {
   try {
     await postRequest('/logout');
+    ticketStore.setters.clear();
+    categoryStore.setters.clear();
+    userStore.setters.clear();
     router.push({ name: 'login.overview' });
   } catch (err) {
     console.error('Logout failed', err);

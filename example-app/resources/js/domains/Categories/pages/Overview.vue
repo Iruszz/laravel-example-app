@@ -6,6 +6,7 @@ import ErrorMessage from '../../../services/components/ErrorMessage.vue';
 import { setMessage, destroyMessage } from '../../../services/error';
 import { initFlowbite } from 'flowbite';
 import { orderBy } from '../../../services/helpers';
+import { getLoggedInUser, z } from '../../Auth/store';
 
 destroyMessage();
 
@@ -13,7 +14,7 @@ const categories = computed(() =>
     orderBy(categoryStore.getters.all.value, 'title')
 );
 
-const currentUser = userStore.getters.current;
+const currentUser = computed(() => getLoggedInUser.value);
 
 const fetchCategories = async () => {
     try {
@@ -30,7 +31,7 @@ const fetchCategories = async () => {
 onMounted(async () => {
     await fetchCategories();
     if (!currentUser.value) {
-        await userStore.actions.fetchCurrentUser();
+        await me();
     }
     await nextTick(); 
     initFlowbite();

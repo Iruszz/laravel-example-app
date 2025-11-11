@@ -18,7 +18,6 @@ const formData = ref({
 
 const allUsers = computed(() => userStore.getters.all.value);
 const roles = computed(() => {
-  // get unique roles from all users
   const map = new Map();
   allUsers.value.forEach(u => u.role && !map.has(u.role.id) && map.set(u.role.id, u.role));
   return Array.from(map.values());
@@ -42,17 +41,6 @@ function cancel() {
         <input v-model="formData.name" id="name" type="text" required
                class="block w-full rounded-md bg-white/5 px-3 py-2 text-base text-white outline-1 -outline-offset-1 outline-white/10 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500"/>
         <FormError name="name" />
-      </div>
-
-      <!-- User Role -->
-      <div>
-        <label for="role" class="block text-sm font-medium text-white">User Role</label>
-        <select v-model="formData.user_role_id" id="role" required
-                class="block w-full rounded-md bg-white/5 px-3 py-2 text-base text-white outline-1 -outline-offset-1 outline-white/10 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500">
-          <option value="" disabled>Select a role</option>
-          <option v-for="role in roles" :key="role.id" :value="role.id">{{ role.name }}</option>
-        </select>
-        <FormError name="user_role_id" />
       </div>
 
       <!-- Email -->

@@ -2,7 +2,8 @@
 import { ref, onMounted, computed, nextTick } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { getRequest } from '../../../services/http';
-import { userStore } from '../../Auth/index';
+import { userStore } from '../../Users';
+import { getLoggedInUser, me } from '../../Auth/store'
 import { categoryStore } from '..';
 import { commentStore } from '../../Comments/index';
 import ErrorMessage from '../../../services/components/ErrorMessage.vue';
@@ -24,7 +25,7 @@ const comment = ref({
     comment: ''
 });
 
-const currentUser = userStore.getters.current;
+const currentUser = computed(() => getLoggedInUser.value);
 
 const isOwnerOrAgent = computed(() => {
   const u = currentUser.value;
@@ -81,7 +82,7 @@ onMounted(async () => {
   }
 
   if (!currentUser.value) {
-    await userStore.actions.fetchCurrentUser();
+    await me();
   }
 });
 
