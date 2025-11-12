@@ -1,25 +1,24 @@
 <script setup>
 import { ref } from 'vue';
-import { categoryStore } from '../../Categories/index';
 import ErrorMessage from '../../../services/components/ErrorMessage.vue';
 import FormError from '../../../services/components/FormError.vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
+const route = useRoute();
 const router = useRouter();
 
-categoryStore.actions.getAll();
-const categories = categoryStore.getters.all;
+const ticketId = Number(route.query.ticket_id);
 
-const props = defineProps({ ticket: Object, title: String, description: String });
+const props = defineProps({ note: Object, title: String, description: String });
 
 const emit = defineEmits(['submit']);
 
-const formData = ref({ ...props.ticket });
+const formData = ref({ ...props.note });
 
 const handleSubmit = () => emit('submit', formData.value);
 
 function cancel() {
-  router.push({ name: 'tickets.overview' })
+  router.push({ name: 'ticket.show', params: { ticket: ticketId } });
 }
 </script>
 
@@ -35,28 +34,14 @@ function cancel() {
 
                     <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                         <div class="sm:col-span-4">
-                            <label for="title" class="block text-sm/6 font-medium text-white">Title</label>
+                            <label for="description" class="block text-sm/6 font-medium text-white">Title</label>
                             <div class="mt-2">
-                                <input v-model="formData.title" id="title" type="text" name="title" autocomplete="given-name" required
+                                <input v-model="formData.description" id="description" type="text" name="description" autocomplete="given-name" required
                                 class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6" 
                             />
                             </div>
                         </div>
-                        <FormError name="title" />
-
-                        <div class="sm:col-span-3">
-                            <label for="category" class="block text-sm/6 font-medium text-white">Category</label>
-                            <div class="mt-2 grid grid-cols-1">
-                                <select v-model="formData.category_id" id="category" title="category" required
-                                    class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white/5 py-1.5 pr-8 pl-3 text-base text-white outline-1 -outline-offset-1 outline-white/10 *:bg-gray-800 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
-                                >
-                                    <option v-for="category in categories" :key="category.id" :value="category.id">
-                                        {{ category.title }}
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                        <FormError name="category.title" />
+                        <FormError name="description" />
                     </div>
                 </div>
             </div>

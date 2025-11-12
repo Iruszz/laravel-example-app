@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\NoteController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\TicketController;
 use App\Http\Middleware\IsAdminMiddleware;
@@ -69,4 +70,5 @@ Route::middleware(['auth:sanctum', 'verified', IsAdminMiddleware::class])->group
     Route::put('/tickets/{ticket}/status', [TicketController::class, 'updateStatus']);
     Route::apiResource('users', UserController::class);
     Route::put('/users/{user}', [UserController::class, 'update']);
+    Route::apiResource('notes', NoteController::class);
 });

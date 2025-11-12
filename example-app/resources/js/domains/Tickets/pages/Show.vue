@@ -2,7 +2,7 @@
 import { ref, onMounted, computed, nextTick } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { getRequest } from '../../../services/http';
-import { userStore } from '../../Users';
+import { noteStore } from '../../Notes';
 import { ticketStore } from '..';
 import { commentStore } from '../../Comments/index';
 import ErrorMessage from '../../../services/components/ErrorMessage.vue';
@@ -10,15 +10,22 @@ import Form from '../../Comments/components/FormShowPage.vue';
 import Status from '../components/Status.vue';
 import { Ticket } from '../types';
 import { getLoggedInUser, me } from '../../Auth/store';
+import { orderBy } from '../../../services/helpers';
+import { initFlowbite } from 'flowbite';
 
 const route = useRoute();
 const router = useRouter();
+
 
 const ticketId = Number(route.params.ticket);
 const ticket = ref<Ticket | null>(null);
 
 commentStore.actions.getAll();
 const comments =  commentStore.getters.getCommentsByTicketId(ticketId);
+
+const notes = computed(() =>
+    orderBy(noteStore.getters.getNotesByTicketId(ticketId).value, 'created_at', false)
+);
 
 const comment = ref({
     ticket_id: ticketId,
@@ -68,7 +75,9 @@ onMounted(async () => {
       ticket.value = data;
     }
 
-    await nextTick();
+    await noteStore.actions.getAll();
+
+    initFlowbite(); 
 
     const hash = window.location.hash;
     if (hash) {
@@ -86,9 +95,18 @@ onMounted(async () => {
   }
 });
 
+const deleteNote = (id: number) => {
+    noteStore.actions.delete(id);
+};
 
 const deleteComment = (id: number) => {
     commentStore.actions.delete(id);
+}
+
+function deleteConfirm(noteId: number) {
+    if (confirm("The ticket is being deleted together with the reviews")) {
+        deleteNote(ticketId);
+    }
 }
 </script>
 
@@ -131,7 +149,121 @@ const deleteComment = (id: number) => {
                     </div>
                 </div>
 
-                <!-- Add Notes -->
+                <!-- Notes -->
+                <div v-if="getLoggedInUser?.is_admin" class="py-5 gap-5">
+                    <div class="flex flex-wrap pb-5 gap-5 items-stretch justify-start">
+                        <div
+                        v-for="note in notes"
+                        :key="note.id"
+                        class="bg-gray-50 min-w-75 p-6 border-3 border-blue-700 rounded-lg dark:bg-gray-800 w-full md:w-auto"
+                        >
+                            <div class="flex justify-between items-start">
+                                <!-- Left column: note text -->
+                                <div class="flex flex-col pt-1 max-w-[calc(100%-3rem)]">
+                                    <p class="text-gray-500 dark:text-white font-semibold">
+                                        {{ note.user?.name || 'Unknown' }} added a note:
+                                    </p>
+                                    <p class="text-gray-500 dark:text-gray-400 mt-2">
+                                        {{ note.description }}
+                                    </p>
+                                </div>
+
+                                <!-- Right column: dropdown button -->
+                                <div>
+                                    <button
+                                        :id="`dropdownDefault-${note.id}`"
+                                        :data-dropdown-toggle="`dropdown-${note.id}`"
+                                        class="inline-flex items-center p-2 text-sm font-medium text-center text-blue-700 dark:text-blue-400 rounded-lg hover:bg-blue-500 hover:text-white"
+                                    >
+                                        <svg
+                                        class="w-5 h-5"
+                                        aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="currentColor"
+                                        viewBox="0 0 16 3"
+                                        >
+                                        <path
+                                            d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z"
+                                        />
+                                        </svg>
+                                    </button>
+
+                                    <!-- Dropdown menu -->
+                                    <div
+                                        :id="`dropdown-${note.id}`"
+                                        class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700 dark:divide-gray-600"
+                                    >
+                                        <ul
+                                        class="py-2 text-sm font-medium text-gray-700 dark:text-gray-400"
+                                        aria-labelledby="dropdownMenuIconHorizontalButton"
+                                        >
+                                            <li>
+                                                <RouterLink
+                                                class="flex block px-4 py-2 mx-2 gap-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                                :to="{ name: 'note.edit', params: { id: note.id }, query: { ticket_id: ticket.id }}"
+                                                >
+                                                <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                                                    <path fill-rule="evenodd" d="M11.3 6.2H5a2 2 0 0 0-2 2V19a2 2 0 0 0 2 2h11c1.1 0 2-1 2-2.1V11l-4 4.2c-.3.3-.7.6-1.2.7l-2.7.6c-1.7.3-3.3-1.3-3-3.1l.6-2.9c.1-.5.4-1 .7-1.3l3-3.1Z" clip-rule="evenodd"></path>
+                                                    <path fill-rule="evenodd" d="M19.8 4.3a2.1 2.1 0 0 0-1-1.1 2 2 0 0 0-2.2.4l-.6.6 2.9 3 .5-.6a2.1 2.1 0 0 0 .6-1.5c0-.2 0-.5-.2-.8Zm-2.4 4.4-2.8-3-4.8 5-.1.3-.7 3c0 .3.3.7.6.6l2.7-.6.3-.1 4.7-5Z" clip-rule="evenodd"></path>
+                                                </svg>
+                                                Edit Note
+                                                </RouterLink>
+                                            </li>
+                                        </ul>
+
+                                        <ul
+                                        v-if="getLoggedInUser?.is_admin"
+                                        class="py-2 px-2 text-sm font-medium text-gray-700 dark:text-gray-400"
+                                        >
+                                            <li>
+                                                <button
+                                                type="button"
+                                                class="flex w-full px-4 py-2 gap-2 rounded-lg text-sm text-red-700 hover:bg-red-100 dark:hover:bg-gray-600 dark:text-red-500"
+                                                @click="deleteConfirm(ticket.id)"
+                                                >
+                                                <svg
+                                                    class="w-4 h-4"
+                                                    aria-hidden="true"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    fill="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <path
+                                                    fill-rule="evenodd"
+                                                    d="M8.6 2.6A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4c0-.5.2-1 .6-1.4ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z"
+                                                    clip-rule="evenodd"
+                                                    />
+                                                </svg>
+                                                Delete
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Add note button -->
+                    <RouterLink
+                        type="button"
+                        class="flex justify-items-center items-center w-fit gap-2 text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                        :to="{ name: 'note.create', query: { ticket_id: ticket.id } }"
+                    >
+                        <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="2"
+                        stroke="currentColor"
+                        class="size-6"
+                        >
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                        Add note
+                    </RouterLink>
+                </div>
+
 
                 <!-- Comments -->
                 <div class="">

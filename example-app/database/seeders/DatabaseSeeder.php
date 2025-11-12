@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             TicketSeeder::class,
             TicketAgentSeeder::class,
             CommentSeeder::class,
+            NoteSeeder::class,
         ]);
     }
 }

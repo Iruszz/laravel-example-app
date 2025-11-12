@@ -8,6 +8,7 @@ import { CategoryRoutes } from '../domains/Categories/routes';
 import ForbiddenPage from '../services/components/ForbiddenPage.vue';
 import { getLoggedInUser, isLoggedIn } from '../domains/Auth/store';
 import { UsersRoutes } from '../domains/Users/routes';
+import { NoteRoutes } from '../domains/Notes/routes';
 
 // --- Router instance ---
 export const router = createRouter({
@@ -20,6 +21,7 @@ export const router = createRouter({
         ...AgentRoutes,
         ...CommentRoutes,
         ...CategoryRoutes,
+        ...NoteRoutes,
         { path: '/forbidden', component: ForbiddenPage, name: 'forbidden' },
     ],
 });
