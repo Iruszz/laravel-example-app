@@ -16,16 +16,16 @@ class NotePolicy
         //
     }
 
-    public function update(User $user)
+    public function create(User $user)
     {
         return $user->is_admin
             ? Response::allow()
             : Response::denyWithStatus(403);
     }
 
-    public function create(User $user)
+    public function update(User $user, Note $note)
     {
-        return $user->is_admin
+        return $user->is_admin && $note->user_id === $user->id
             ? Response::allow()
             : Response::denyWithStatus(403);
     }

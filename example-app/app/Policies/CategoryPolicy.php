@@ -24,18 +24,18 @@ class CategoryPolicy
         return null;
     }
 
-    public function View(User $user, Category $category)
+    public function view(User $user, Category $category)
     {
-        return $user->id === $ticket->user_id
+        return $user->id === $category->user_id
             ? Response::allow()
             : Response::denyWithStatus(404);
     }
 
-    public function Create(User $user) {
+    public function create(User $user) {
         return $user->is_admin;
     }
 
-    public function Update(User $user, Category $category)
+    public function update(User $user, Category $category)
     {
         if ($user->is_admin) {
 

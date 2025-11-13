@@ -115,6 +115,6 @@ class CommentController extends Controller
     public function destroy(Comment $comment)
     {
         $comment->delete();
-        return response()->json(['message' => 'Review succesfully deleted']);
+        return response()->json(['message' => 'Comment succesfully deleted']);
     }
 }

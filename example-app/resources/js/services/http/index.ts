@@ -68,6 +68,10 @@ http.interceptors.response.use(
                 toastStore.add('Only admins can access categories.', 'error');
                 router.push({ name: 'categories.overview' });
             }
+            if (error.response.status === 403 && error.response.data.message?.includes('NOTE_FORBIDDEN')) {
+                toastStore.add(error.response.data.message, 'error');
+                router.push({ name: 'notes.overview' });
+            }
         }
         return Promise.reject(error);
     }

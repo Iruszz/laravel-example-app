@@ -41,6 +41,13 @@ const isOwnerOrAgent = computed(() => {
   return u.id === t.user_id || u.id === t.agent_id;
 });
 
+const canSeeDropdown = (note) => {
+    const user = getLoggedInUser.value;
+    if (!user) return false;
+    const result = user.is_admin && user.id === note.user?.id;
+    return result;
+};
+
 const formatTime = (dateStr) => {
   const d = new Date(dateStr);
   return d.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
@@ -101,12 +108,6 @@ const deleteNote = (id: number) => {
 
 const deleteComment = (id: number) => {
     commentStore.actions.delete(id);
-}
-
-function deleteConfirm(noteId: number) {
-    if (confirm("The ticket is being deleted together with the reviews")) {
-        deleteNote(ticketId);
-    }
 }
 </script>
 
@@ -169,7 +170,7 @@ function deleteConfirm(noteId: number) {
                                 </div>
 
                                 <!-- Right column: dropdown button -->
-                                <div>
+                                <div v-if="canSeeDropdown(note)">
                                     <button
                                         :id="`dropdownDefault-${note.id}`"
                                         :data-dropdown-toggle="`dropdown-${note.id}`"
@@ -219,7 +220,7 @@ function deleteConfirm(noteId: number) {
                                                 <button
                                                 type="button"
                                                 class="flex w-full px-4 py-2 gap-2 rounded-lg text-sm text-red-700 hover:bg-red-100 dark:hover:bg-gray-600 dark:text-red-500"
-                                                @click="deleteConfirm(ticket.id)"
+                                                @click="deleteNote(note.id)"
                                                 >
                                                 <svg
                                                     class="w-4 h-4"

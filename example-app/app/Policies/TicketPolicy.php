@@ -31,21 +31,21 @@ class TicketPolicy
     }
 
 
-    public function View(User $user, Ticket $ticket)
+    public function view(User $user, Ticket $ticket)
     {
         return $user->id === $ticket->user_id
             ? Response::allow()
             : Response::denyWithStatus(404);
     }
 
-    public function Create(User $user)
+    public function create(User $user)
     {
         return $user !== null
             ? Response::allow()
             : Response::denyWithStatus(401);
     }
 
-    public function Update(User $user, Ticket $ticket)
+    public function update(User $user, Ticket $ticket)
     {
         if ($user->is_admin) {
 
@@ -56,7 +56,7 @@ class TicketPolicy
             : Response::denyWithStatus(404);
     }
 
-    public function Delete(User $user, Ticket $ticket)
+    public function delete(User $user, Ticket $ticket)
     {
         return $user->id === $ticket->user_id
             ? Response::allow()

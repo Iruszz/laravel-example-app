@@ -48,4 +48,13 @@ class NoteController extends Controller
         $note->load([]);
         return new NoteResource($note);
     }
+
+        /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Note $note)
+    {
+        $note->delete();
+        return response()->json(['message' => 'Note succesfully deleted']);
+    }
 }
