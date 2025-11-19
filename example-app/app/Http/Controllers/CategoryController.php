@@ -13,13 +13,16 @@ class CategoryController extends Controller
         return Category::all();
     }
 
+    // TODO: route model binding toepassen
     public function show($id)
     {
+        // TODO: resources gebruiken
         return Category::findOrFail($id);
     }
 
     public function store(Request $request)
     {
+        // TODO: form validation classes gebruiken
         $this->authorize('create', Category::class);
         
         $category = Category::create($request->validate([

@@ -12,6 +12,13 @@ class NormalUsersSeeder extends Seeder
 {
     public function run(): void
     {
+        // TODO: ik zou hier een factory gebruiken en de custom data zoals name, email en password overriden:
+        // User::factory()->create([
+        // 'name' => 'Iris Hofman',
+        // 'email' => '123@example.com',
+        // 'password' => '123'
+        // ]);
+
         $faker = Faker::create();
         $roles = UserRole::where('name', '!=', 'Admin')->pluck('id')->toArray();
 

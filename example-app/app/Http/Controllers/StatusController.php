@@ -14,6 +14,7 @@ class StatusController extends Controller
         $this->authorize('update', $status);
 
         $status->name = 'solved';
+        // TODO: update en save is dubbel op
         $status->save();
 
         $status->update($request->validated());

@@ -15,7 +15,8 @@ class NoteController extends Controller
     public function index()
     {
         $user = Auth::user();
-
+        
+        // TODO: voeg auth middleware aan route toe zodat onderstaande authenticatie / authorisatie overbodig wordt
         if (!$user || !$user->is_admin) {
             return ApiResponse::forbidden('You are not authorized to view notes.');
         }

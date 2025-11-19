@@ -18,6 +18,7 @@ class CommentController extends Controller
 {
     use Notifiable;
 
+    // TODO: deze functie wordt maar 1 keer gebruikt dus deze functie kan weg
     protected function loadRelations(Comment $comment)
     {
         return $comment->load(['ticket', 'user', 'recipient']);
@@ -49,8 +50,10 @@ class CommentController extends Controller
         $this->authorize('create', $ticket);
 
         $user = Auth::user();
+        // TODO: import namespace zodat code overzichtelijker wordt en je niet de fully qualified namespace hoeft uit te schrijven
         $ticket = \App\Models\Ticket::findOrFail($data['ticket_id']);
 
+        // TODO: authorisatie via policy doen
         if ($user->id !== $ticket->user_id && $user->id !== $ticket->agent_id) {
             return ApiResponse::forbidden(
                 'You are not authorized to comment on this ticket.',
@@ -74,7 +77,7 @@ class CommentController extends Controller
         $comments = Comment::with('user')
         ->where('ticket_id', $data['ticket_id'])
         ->get();
-
+        // TODO: standaard HTTP 200 code volstaat ook
         return (new CommentResource($this->loadRelations($comment)))
             ->response()
             ->setStatusCode(201);

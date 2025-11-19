@@ -4,12 +4,14 @@ import { ticketStore } from '..';
 import ErrorMessage from '../../../services/components/ErrorMessage.vue';
 import { setMessage, destroyMessage } from '../../../services/error';
 import Status from '../components/Status.vue';
+// TODO: wat doet initFlowbite?
 import { initFlowbite } from 'flowbite';
 import { orderBy } from '../../../services/helpers';
 import { getLoggedInUser } from '../../Auth/store';
 
 destroyMessage();
 
+// TODO: aparte functie overbodig want wordt maar 1 keer gebruikt
 const fetchTickets = async () => {
     try {
         await ticketStore.actions.getAll();
@@ -28,6 +30,7 @@ const tickets = computed(() =>
 
 onMounted(async () => {
     await fetchTickets();
+    // TODO: waarom nextTick?
     await nextTick(); 
     initFlowbite();
 });
@@ -45,6 +48,7 @@ const markAsSolved = async (ticketId: number) => {
     await ticketStore.actions.updateStatus(ticketId, 2);
 }
 
+// TODO: aparte functie overbodig
 const deleteTicket = (id: number) => {
     ticketStore.actions.delete(id);
 };

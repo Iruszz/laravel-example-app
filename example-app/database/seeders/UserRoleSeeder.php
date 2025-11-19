@@ -9,6 +9,7 @@ class UserRoleSeeder extends Seeder
 {
     public function run(): void
     {
+        // TODO: kan allemaal in 1 gezamelijk array
         $roles = ['Admin']; // one admin role
 
         // generate 10 random role names

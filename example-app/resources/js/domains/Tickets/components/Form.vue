@@ -33,6 +33,7 @@ function cancel() {
                     <h2 class="text-base/7 font-semibold text-white">{{ title }}</h2>
                     <p class="mt-1 text-sm/6 text-gray-400">{{ description }}</p>
 
+                    <!-- TODO: voeg labels toe bij de invoervelden zodat de bezoeker weet wat de velden inhouden -->
                     <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                         <div class="sm:col-span-4">
                             <label for="title" class="block text-sm/6 font-medium text-white">Title</label>

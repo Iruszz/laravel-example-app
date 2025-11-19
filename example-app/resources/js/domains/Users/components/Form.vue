@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// TODO: ongebruikte imports verwijderen
 import { ref, onMounted, computed } from 'vue';
 import { userStore } from '../index';
 import ErrorMessage from '../../../services/components/ErrorMessage.vue';
@@ -17,6 +18,7 @@ const formData = ref({
 });
 
 const allUsers = computed(() => userStore.getters.all.value);
+// TODO: ongebruikte variabelen verwijderen
 const roles = computed(() => {
   const map = new Map();
   allUsers.value.forEach(u => u.role && !map.has(u.role.id) && map.set(u.role.id, u.role));

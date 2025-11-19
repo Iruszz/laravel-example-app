@@ -4,6 +4,7 @@ import Create from '../Tickets/pages/Create.vue';
 import Edit from '../Tickets/pages/Edit.vue';
 import Assign from '../Agents/pages/Assign.vue';
 
+// TODO: gebruik consistente naamgeving, dus niet :ticket en :id door elkaar
 export const TicketRoutes =  [
     { path: '/tickets', component: Overview, name: 'tickets.overview' },
     { path: '/tickets/:ticket', component: Show, name: 'ticket.show' },

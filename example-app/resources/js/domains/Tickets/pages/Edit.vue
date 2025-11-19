@@ -18,6 +18,7 @@ const description = "Here you can edit the ticket"
 
 onMounted(async () => {
   const id = route.params.id;
+  // TODO: ticket via store opvragen
   const { data } = await getRequest(`/tickets/${id}`);
   form.value.title = data.title;
   form.value.description = data.description;

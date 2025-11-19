@@ -22,6 +22,7 @@ Route::get('/email/verify', function () {
     ]);
     })->middleware('auth:sanctum')->name('verification.notice');
 
+    // TODO: stop zo min mogelijk code in je routing bestand door deze in een controller te zetten
 Route::get('/email/verify/{id}/{hash}', function ($id, $hash, Request $request) {
     $user = User::findOrFail($id);
 

@@ -17,6 +17,7 @@ class TicketAgentSeeder extends Seeder
             return;
         }
 
+        // TODO: agent toekenning kan net zo goed in TicketSeeder gebeuren
         Ticket::all()->each(function ($ticket) use ($admins) {
             $ticket->agent_id = $admins->random()->id;
             $ticket->save();

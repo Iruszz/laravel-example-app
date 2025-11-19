@@ -35,6 +35,7 @@ const comment = ref({
 const currentUser = computed(() => getLoggedInUser.value);
 
 const isOwnerOrAgent = computed(() => {
+    // TODO: gebruik duidelijke variable namen
   const u = currentUser.value;
   const t = ticket.value;
   if (!u || !t) return false;
@@ -86,6 +87,7 @@ onMounted(async () => {
 
     initFlowbite(); 
 
+    // TODO: kan dit via de vue router?
     const hash = window.location.hash;
     if (hash) {
       const el = document.querySelector(hash);

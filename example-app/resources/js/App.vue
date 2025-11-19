@@ -18,10 +18,12 @@ function closeDropdown() {
 }
 
 onMounted(async () => {
+  // TODO: waarvoor dient onderstaande code?
     router.afterEach(() => {
       closeDropdown()
     })
     await me();
+    // TODO: is nextTick noodzakelijk?
     await nextTick();
 });
 
@@ -40,6 +42,7 @@ const handleLogout = async () => {
 
 <template>
 <div class="flex flex-col min-h-screen">
+  <!-- TODO: navigatie in eigen Nav component -->
   <nav v-if="!$route.meta.hideNavbar" class="bg-gray-800/50">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between">

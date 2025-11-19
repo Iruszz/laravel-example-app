@@ -3,6 +3,8 @@ import { ref, computed } from 'vue';
 import { getRequest, putRequest } from '../../services/http';
 import { setMessage, destroyMessage } from '../../services/error';
 
+// TODO: ongebruikte code verwijderen
+
 // interface Ticket {
 //   id: number;
 //   title: string;

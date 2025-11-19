@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
+        // TODO: "roles" is een betere naam, omdat "user_roles" kan impliceren dat het om een koppeltabel gaat
         Schema::create('user_roles', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique(); // e.g. "Editor", "Viewer", etc.
